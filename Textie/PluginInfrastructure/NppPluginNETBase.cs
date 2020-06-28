@@ -3,10 +3,10 @@ using System;
 
 namespace Kbg.NppPluginNET.PluginInfrastructure
 {
-    class PluginBase
+    public class PluginBase
     {
         internal static NppData nppData;
-        internal static FuncItems _funcItems = new FuncItems();
+        public static FuncItems _funcItems = new FuncItems();
 
         internal static void SetCommand(int index, string commandName, NppFuncItemDelegate functionPointer)
         {

@@ -1,8 +1,10 @@
 ﻿// NPP plugin platform for .Net v0.94.00 by Kasper B. Graversen etc.
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Kbg.NppPluginNET.PluginInfrastructure
 {
@@ -266,7 +268,7 @@ namespace Kbg.NppPluginNET.PluginInfrastructure
         /// If gateways are missing or incomplete, please help extend them and send your code to the project
         /// at https://github.com/kbilsted/NotepadPlusPlusPluginPack.Net
         /// </summary>
-	public static IntPtr SendMessage(IntPtr hWnd, uint Msg, int wParam, ref LangType lParam)
+        public static IntPtr SendMessage(IntPtr hWnd, uint Msg, int wParam, ref LangType lParam)
         {
             IntPtr outVal;
             IntPtr retval = SendMessage(hWnd, (UInt32)Msg, new IntPtr(wParam), out outVal);
@@ -309,5 +311,57 @@ namespace Kbg.NppPluginNET.PluginInfrastructure
         /// <returns></returns>
         [DllImport("user32")]
         public static extern int GetScrollInfo(IntPtr hwnd, int nBar, ref ScrollInfo scrollInfo);
+
+
+        #region Key Events
+
+        public const int WH_KEYBOARD_LL = 13;
+        public const int WM_KEYDOWN = 0x0100;
+        //public static LowLevelKeyboardProc _proc = HookCallback;
+        public static IntPtr _hookID = IntPtr.Zero;
+
+        //public static void Main()
+        //{
+        //    _hookID = SetKeyboardHookHook(_proc);
+        //    Application.Run();
+        //    UnhookWindowsHookEx(_hookID);
+        //}
+
+        public static IntPtr SetKeyboardHookHook(LowLevelKeyboardProc proc)
+        {
+            using (Process curProcess = Process.GetCurrentProcess())
+            using (ProcessModule curModule = curProcess.MainModule)
+            {
+                return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
+            }
+        }
+
+        public delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+        public static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        {
+            if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN)
+            {
+                int vkCode = Marshal.ReadInt32(lParam);
+                Console.WriteLine((Keys)vkCode);
+            }
+
+            return CallNextHookEx(_hookID, nCode, wParam, lParam);
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool UnhookWindowsHookEx(IntPtr hhk);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern IntPtr GetModuleHandle(string lpModuleName);
+
+        #endregion
     }
 }

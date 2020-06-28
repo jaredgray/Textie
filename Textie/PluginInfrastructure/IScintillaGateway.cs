@@ -225,6 +225,7 @@ namespace Kbg.NppPluginNET.PluginInfrastructure
         /// <summary>Set the background colour used for a particular marker number when its folding block is selected. (Scintilla feature 2292)</summary>
         void MarkerSetBackSelected(int markerNumber, Colour back);
 
+
         /// <summary>Enable/disable highlight for current folding bloc (smallest one that contains the caret) (Scintilla feature 2293)</summary>
         void MarkerEnableHighlight(bool enabled);
 
