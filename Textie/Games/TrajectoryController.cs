@@ -14,16 +14,27 @@ namespace Textie.Games
         }
         public Size GameArea { get; set; }
 
+        private void HandleScreenEdgeReverseDirection(Sprite sprite, ITrajectory trajectory)
+        {
+
+        }
+
+        private void HandleScreenEdgeDisappear(Sprite sprite, ITrajectory trajectory)
+        {
+            // NEXT: delete parts of the sprite as it exits the screen before just deleting it
+            if (sprite.Bounds.Position.X < 0)
+                sprite.MarkDelete = true;
+            if (sprite.Bounds.Position.X + sprite.Bounds.Size.Width > GameArea.Width)
+                sprite.MarkDelete = true;
+            if (sprite.Bounds.Position.Y < 0)
+                sprite.MarkDelete = true;
+            if (sprite.Bounds.Position.Y + sprite.Bounds.Size.Height > GameArea.Height)
+                sprite.MarkDelete = true;
+        }
+
         private void HandleScreenEdge(Sprite sprite, ITrajectory trajectory)
         {
-            //if (sprite.Bounds.Position.X < 0)
-            //    sprite.Bounds.Position.X = 0;
-            //if (sprite.Bounds.Position.X + sprite.Bounds.Size.Width > Size.Width)
-            //    sprite.Bounds.Position.X = Size.Width - sprite.Bounds.Size.Width;
-            //if (sprite.Bounds.Position.Y < 0)
-            //    sprite.Bounds.Position.Y = 0;
-            //if (sprite.Bounds.Position.Y + sprite.Bounds.Size.Height > Size.Height)
-            //    sprite.Bounds.Position.Y = Size.Height - sprite.Bounds.Size.Height;
+
         }
 
         public void HandleSprites(IEnumerable<Sprite> sprites)
@@ -48,6 +59,7 @@ namespace Textie.Games
                 {
                     sprite.Bounds.Position.X--;
                 }
+                HandleScreenEdgeDisappear(sprite, trajectory);
             }
         }
     }

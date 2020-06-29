@@ -21,8 +21,10 @@ namespace Textie
         {
             if(null == sw)
             {
-                sw = new StreamWriter(LogPath, true);
-                sw.AutoFlush = true;
+                sw = new StreamWriter(LogPath, true)
+                {
+                    AutoFlush = true
+                };
             }
         }
 
@@ -30,6 +32,7 @@ namespace Textie
         {
             sw.Close();
             sw.Dispose();
+            sw = null;
         }
 
         public void WriteLine(string text)

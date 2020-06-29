@@ -6,14 +6,20 @@ using System.Windows.Forms;
 
 namespace Textie.TextieInfrastructure
 {
-    public delegate void KeyDownEventHandler(SciKeys key);
+    public delegate void KeyDownSciEventHandler(SciKeys key);
+    public delegate void KeyDownWinEventHandler(Keys key);
     public static class KeyboarEventBroadcaster
     {
-        public static event KeyDownEventHandler KeyDown;
+        public static event KeyDownSciEventHandler KeyDownSci;
+        public static event KeyDownWinEventHandler KeyDownWin;
 
-        public static void FireKeyDown(SciKeys key)
+        public static void FireKeyDownSci(SciKeys key)
         {
-            KeyDown?.Invoke(key);
+            KeyDownSci?.Invoke(key);
+        }
+        public static void FireKeyDownWin(Keys key)
+        {
+            KeyDownWin?.Invoke(key);
         }
     }
 }

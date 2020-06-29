@@ -20,5 +20,7 @@ namespace Textie.Games.Shooter
         public int Frequency { get; set; }
 
         public Direction Direction { get; set; }
+
+        public EdgeScreenHandling EdgeOfScreenCondition { get; set; }
     }
 }

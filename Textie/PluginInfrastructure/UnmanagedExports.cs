@@ -31,6 +31,7 @@ namespace Kbg.NppPluginNET
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
         static uint messageProc(uint Message, IntPtr wParam, IntPtr lParam)
         {
+            //Main.OnMessageProc(Message, wParam, lParam);
             return 1;
         }
 

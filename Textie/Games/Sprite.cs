@@ -26,7 +26,11 @@ namespace Textie.Games
             };
         }
 
+        public bool MarkDelete { get; set; }
+
         public Bounds Bounds { get; private set; }
+
+        public int LayerOrder { get; set; }
 
         public void SetData(string data)
         {

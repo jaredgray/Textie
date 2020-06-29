@@ -4,20 +4,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Windows.Input;
+using Textie.Games.Primitives;
 
 namespace Textie.Games
 {
     public abstract class Game
     {
-        const bool DO_LOG = false;
+        const bool DO_LOG = true;
         protected IntPtr WindowId = IntPtr.Zero;
         protected INotepadPPGateway Npp { get; private set; }
         protected IScintillaGateway Editor { get; private set; }
-        protected Logger Logger { get; set; }
+        internal Logger Logger { get; set; }
+        protected TrajectoryController TrajectoryController { get; set; }
+
 
         protected GameData GameData { get; set; }
 
         #region Game variables 
+
+        protected Size GameSize { get; }
 
         private bool IsInitialized { get; set; }
         protected bool IsAlive { get; set; }
@@ -31,9 +37,15 @@ namespace Textie.Games
             Npp = npp;
             Editor = editor;
             Logger = new Logger(@"C:\Temp\TextieGameLog.txt");
+            GameSize = new Size()
+            {
+                Height = 40,
+                Width = 128
+            };
+            TrajectoryController = new TrajectoryController(GameSize);
             GameData = new GameData
             {
-                Stage = new Stage(editor, Logger, 128, 40)
+                Stage = new Stage(editor, Logger, TrajectoryController, GameSize)
             };
         }
 
@@ -54,22 +66,25 @@ namespace Textie.Games
 
         public void NotifyCurrentWindow(IntPtr windowId)
         {
-            if (DO_LOG)
-            {
                 if (IsAlive)
                 {
                     if (windowId != WindowId && IsActive)
+                {
+                    if (DO_LOG)
                     {
                         Logger.WriteLine($"{WindowId}-{DateTime.Now} Pausing Game");
+                    }
                         IsActive = false;
                     }
                     else if (windowId == WindowId && !IsActive)
+                {
+                    if (DO_LOG)
                     {
                         Logger.WriteLine($"{WindowId}-{DateTime.Now} Resuming Game");
+                    }
                         IsActive = true;
                     }
                 }
-            }
         }
 
         public bool NotifyBeforeWindowClose(IntPtr windowId)
@@ -84,7 +99,10 @@ namespace Textie.Games
 
         private void GameLoop()
         {
-            Logger.WriteLine($"Beginning Game Loop. WindowId: {WindowId}");
+            if (DO_LOG)
+            {
+                Logger.WriteLine($"Beginning Game Loop. WindowId: {WindowId}");
+            }
             StartGameLoop();
             while (IsAlive)
             {
@@ -101,7 +119,7 @@ namespace Textie.Games
             {
                 Update();
                 GameData.Stage.Draw();
-                Thread.Sleep(100);
+                Thread.Sleep(33);
                 //SlowGameLoop();
             });
         }

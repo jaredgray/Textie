@@ -12,6 +12,7 @@ using Textie;
 using Textie.Games;
 using Textie.Games.Shooter;
 using Textie.TextieInfrastructure;
+using static Textie.TextieInfrastructure.GlobalKeyboardHook;
 
 namespace Kbg.NppPluginNET
 {
@@ -22,13 +23,13 @@ namespace Kbg.NppPluginNET
         static IScintillaGateway editor;
         static INotepadPPGateway notepad;
         static Logger logger;
-
+        static GlobalKeyboardHook KeyboarHook;
         public static readonly int COMMAND_SORT = 0;
         public static readonly int COMMAND_PLAYSHOOTER = 1;
         public static readonly int COMMAND_STARTLOGGING = 2;
         public static readonly int COMMAND_ENDLOGGING = 3;
 
-        static AsciiShooter shootergame;
+        static SpaceInvaders shootergame;
 
         static StreamWriter sw;
 
@@ -36,9 +37,26 @@ namespace Kbg.NppPluginNET
         {
             editor = new ScintillaGateway(PluginBase.GetCurrentScintilla());
             notepad = new NotepadPPGateway();
-            shootergame = new AsciiShooter(notepad, editor);
+            shootergame = new SpaceInvaders(notepad, editor);
             logger = new Logger(@"C:\Temp\TextieLog.txt");
             editor.StartRecord();
+            
+            //editor.SetBufferedDraw(true);
+            editor.SetCaretFore(new Colour(255, 145, 0));
+
+            logger.StartLogging();
+
+            //KeyboarHook = new GlobalKeyboardHook(logger);
+            //KeyboarHook.KeyboardPressed += KeyboarHook_KeyboardPressed;
+            //var form = ;
+            //BeginLogging();
+            //logger.WriteLine($"Is Form NULL: {null == form}");
+
+        }
+
+        private static void KeyboarHook_KeyboardPressed(object sender, GlobalKeyboardHookEventArgs e)
+        {
+
         }
 
         public static void Main2(IScintillaGateway pEditor, INotepadPPGateway pNotepad)
@@ -49,8 +67,23 @@ namespace Kbg.NppPluginNET
 
             editor = pEditor;
             notepad = pNotepad;
-            shootergame = new AsciiShooter(notepad, editor);
+            shootergame = new SpaceInvaders(notepad, editor);
         }
+
+        //public static void OnMessageProc(uint Message, IntPtr wParam, IntPtr lParam)
+        //{
+        //    var wparamTyped = wParam.ToInt32();
+        //    var lParamTyped = lParam.ToInt32();
+        //    logger.WriteLine("OnMessageProc called");
+        //    if (Enum.IsDefined(typeof(KeyboardState), wparamTyped))
+        //    {
+        //        if(((KeyboardState)wparamTyped) == KeyboardState.KeyDown)
+        //        {
+        //            int vkCode = Marshal.ReadInt32(lParam);
+        //            KeyboarEventBroadcaster.FireKeyDownWin((Keys)vkCode);
+        //        }
+        //    }
+        //}
 
         public static void OnNotification(ScNotification notification)
         {
@@ -69,6 +102,8 @@ namespace Kbg.NppPluginNET
             var docpointer = editor.GetDocPointer();
             shootergame.NotifyCurrentWindow(docpointer);
 
+            //notification.Header.hwndFrom
+
             var action = "";
             Try(() => action = Enum.GetName(typeof(NppMsg), notification.Header.Code), false);
             if(string.IsNullOrEmpty(action))
@@ -82,27 +117,21 @@ namespace Kbg.NppPluginNET
             {
                 shootergame.NotifyBeforeWindowClose(docpointer);
             }
-            else if(notification.Header.Code == (uint)SciMsg.SCN_MACRORECORD)
-            {
-                var key = (SciKeys)notification.lParam;
-                KeyboarEventBroadcaster.FireKeyDown(key);
-
-                Try(() => logger.WriteLine($"{docpointer} - {action} - {notification.lParam} - {Enum.GetName(typeof(SciKeys), key)}"), false);
-            }
 
             /* 
              * 4294966745 is the code sent just before the window changes
              * 
              * 4294966745 - 2481992418880 -  - 0 - 459584
              * */
-            //Try(() => logger.WriteLine($"{notification.Header.Code} - {docpointer} - {action} - {notification.Message} - {notification.Header.hwndFrom}"), false);
+            //var scimsg = Enum.GetName(typeof(SciMsg), notification.Header.Code);
+            //Try(() => logger.WriteLine($"{notification.Header.Code} - {scimsg} - {notification.lParam}, {notification.wParam}, {notification.character}, {notification.Character}, {notification.Header.IdFrom}"), false);
 
         }
 
         public static void CommandMenuInit()
         {
             PluginBase.SetCommand(COMMAND_SORT, "Sort (case insensitive)", SortCaseInsensitive, new ShortcutKey(false, false, false, Keys.None));
-            PluginBase.SetCommand(COMMAND_PLAYSHOOTER, "Play Shooter", PlayShooterGame, new ShortcutKey(false, false, false, Keys.None));
+            PluginBase.SetCommand(COMMAND_PLAYSHOOTER, "Play Space Invaders", PlaySpaceInvadersGame, new ShortcutKey(false, false, false, Keys.None));
             PluginBase.SetCommand(COMMAND_STARTLOGGING, "DEV - Start Logging", BeginLogging, new ShortcutKey(false, false, false, Keys.None));
             PluginBase.SetCommand(COMMAND_ENDLOGGING, "DEV - END Logging", EndLogging, new ShortcutKey(false, false, false, Keys.None));
         }
@@ -153,7 +182,7 @@ namespace Kbg.NppPluginNET
             }
         }
 
-        internal static void PlayShooterGame()
+        internal static void PlaySpaceInvadersGame()
         {
             shootergame.Initialize();
         }

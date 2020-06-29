@@ -12,18 +12,20 @@ namespace Textie.Games
 
         const bool DO_LOG = false;
 
-        public Stage(IScintillaGateway editor, Logger logger, int width, int height)
+        public Stage(IScintillaGateway editor, Logger logger, TrajectoryController trajectoryController, Size size)
         {
             Editor = editor;
             Logger = logger;
+            TrajectoryController = trajectoryController;
             Sprites = new List<Sprite>();
-            Size = new Size() { Width = width, Height = height };
+            Size = size;
             InitializeData();
         }
 
         public Size Size { get; set; }
         private IScintillaGateway Editor { get; set; }
         private Logger Logger { get; set; }
+        private TrajectoryController TrajectoryController { get; set; }
 
 
         private List<char> Data { get; set; }
@@ -68,9 +70,21 @@ namespace Textie.Games
                 sprite.Bounds.Position.Y = Size.Height - sprite.Bounds.Size.Height;
         }
 
+        private void ProcessTrajectorySprites()
+        {
+            TrajectoryController.HandleSprites(Sprites);
+            var deleted = Sprites.Where(x => x.MarkDelete).ToList();
+            // TODO: GC should? cleanup these?? maybe
+            foreach (var victim in deleted)
+            {
+                Sprites.Remove(victim);
+            }
+        }
+
         private void DrawSprites()
         {
-            foreach (var sprite in Sprites)
+            ProcessTrajectorySprites();
+            foreach (var sprite in Sprites.OrderBy(x => x.LayerOrder))
             {
                 // clamp the sprite's position so that it doesn't go out of bounds
                 ClampSprrite(sprite);
