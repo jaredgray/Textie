@@ -9,7 +9,7 @@ namespace Textie.Games.SpaceInvaders
     public class AlienTrajectoryController : TrajectoryController
     {
         public AlienTrajectoryController(Size gameArea, Logger logger)
-            :base(gameArea, logger)
+            : base(gameArea, logger)
         {
 
         }
@@ -22,7 +22,7 @@ namespace Textie.Games.SpaceInvaders
         protected override void OnReverseDirection(Sprite sprite, ITrajectory trajectory)
         {
             base.OnReverseDirection(sprite, trajectory);
-            sprite.Bounds.Position.Y++;
+            sprite.Bounds.Position.Y += sprite.RendererData.StepY;
         }
     }
 }

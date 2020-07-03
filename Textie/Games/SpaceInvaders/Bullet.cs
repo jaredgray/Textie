@@ -22,6 +22,6 @@ namespace Textie.Games.Shooter
         public Direction Direction { get; set; }
 
         public EdgeScreenHandling EdgeOfScreenCondition { get; set; }
-        public TrajectoryRendererData RendererData { get; set; }
+        public TrajectoryRendererData TrajectoryRendererData { get; set; }
     }
 }

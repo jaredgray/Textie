@@ -30,6 +30,6 @@ namespace Textie
         /// <summary>
         /// data used by the rendering system. If this is not initialized by the class that owns it, the control system will initialize it
         /// </summary>
-        TrajectoryRendererData RendererData { get; set; }
+        TrajectoryRendererData TrajectoryRendererData { get; set; }
     }
 }

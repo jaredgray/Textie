@@ -97,6 +97,7 @@ namespace Textie.Games
             foreach (var sprite in Sprites.OrderBy(x => x.LayerOrder))
             {
                 ProcessTrajectorySprite(sprite);
+                sprite.Update();
                 // clamp the sprite's position so that it doesn't go out of bounds
                 ClampSprite(sprite);
                 for (int y = 0; y < sprite.Bounds.Size.Height; y++)

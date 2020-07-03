@@ -56,12 +56,17 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Games\Audio\AudioLoop.cs" />
+    <Compile Include="Games\Audio\IPlayAudio.cs" />
+    <Compile Include="Games\Audio\IAudioTrack.cs" />
+    <Compile Include="Games\Audio\DelayedAudioTrack.cs" />
     <Compile Include="Games\Game.cs" />
     <Compile Include="Games\GameData.cs" />
     <Compile Include="Games\IUpdateSpriteHandler.cs" />
     <Compile Include="Games\Primitives\Bounds.cs" />
     <Compile Include="Games\Primitives\Direction.cs" />
     <Compile Include="Games\Primitives\Size.cs" />
+    <Compile Include="Games\RendererData.cs" />
     <Compile Include="Games\SpaceInvaders\AlienGroup.cs" />
     <Compile Include="Games\SpaceInvaders\Alien.cs" />
     <Compile Include="Games\SpaceInvaders\AlienTrajectoryController.cs" />
@@ -121,6 +126,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Games\SpaceInvaders\Characters.txt" />
+    <None Include="Games\SpaceInvaders\SI04.wav" />
+    <None Include="Games\SpaceInvaders\SI03.wav" />
+    <None Include="Games\SpaceInvaders\SI02.wav" />
+    <None Include="Games\SpaceInvaders\SI01.wav" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\PluginInfrastructure\DllExport\NppPlugin.DllExport.targets" />

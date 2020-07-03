@@ -70,25 +70,27 @@ namespace Textie.Games
 
         public void NotifyCurrentWindow(IntPtr windowId)
         {
-                if (IsAlive)
-                {
-                    if (windowId != WindowId && IsActive)
+            if (IsAlive)
+            {
+                if (windowId != WindowId && IsActive)
                 {
                     if (DO_LOG)
                     {
                         Logger.WriteLine($"{WindowId}-{DateTime.Now} Pausing Game");
                     }
-                        IsActive = false;
-                    }
-                    else if (windowId == WindowId && !IsActive)
+                    IsActive = false;
+                    this.StopGameLoop();
+                }
+                else if (windowId == WindowId && !IsActive)
                 {
                     if (DO_LOG)
                     {
                         Logger.WriteLine($"{WindowId}-{DateTime.Now} Resuming Game");
                     }
-                        IsActive = true;
-                    }
+                    IsActive = true;
+                    this.StartGameLoop();
                 }
+            }
         }
 
         public bool NotifyBeforeWindowClose(IntPtr windowId)

@@ -7,11 +7,12 @@ using Textie.Games.Primitives;
 
 namespace Textie.Games
 {
-    public class SpriteGroup : Sprite, IList<Sprite>
+    public class SpriteGroup<T> : Sprite, IList<T>
+        where T : Sprite
     {
         public SpriteGroup() : base(0, 0)
         {
-            _sprites = new List<Sprite>();
+            _sprites = new List<T>();
         }
 
         public override void Update()
@@ -56,7 +57,7 @@ namespace Textie.Games
             }
         }
 
-        private List<Sprite> _sprites;
+        private List<T> _sprites;
 
         #region IList implementation
 
@@ -64,7 +65,7 @@ namespace Textie.Games
 
         public bool IsReadOnly => false;
 
-        public Sprite this[int index]
+        public T this[int index]
         {
             get
             {
@@ -77,12 +78,12 @@ namespace Textie.Games
             }
         }
 
-        public int IndexOf(Sprite item)
+        public int IndexOf(T item)
         {
             return _sprites.IndexOf(item);
         }
 
-        public void Insert(int index, Sprite item)
+        public void Insert(int index, T item)
         {
             _sprites.Insert(index, item);
             RebuildData();
@@ -94,7 +95,7 @@ namespace Textie.Games
             RebuildData();
         }
 
-        public void Add(Sprite item)
+        public void Add(T item)
         {
             _sprites.Add(item);
             RebuildData();
@@ -106,25 +107,25 @@ namespace Textie.Games
             RebuildData();
         }
 
-        public bool Contains(Sprite item)
+        public bool Contains(T item)
         {
             return _sprites.Contains(item);
         }
 
-        public void CopyTo(Sprite[] array, int arrayIndex)
+        public void CopyTo(T[] array, int arrayIndex)
         {
             _sprites.CopyTo(array, arrayIndex);
             RebuildData();
         }
 
-        public bool Remove(Sprite item)
+        public bool Remove(T item)
         {
             var removal = _sprites.Remove(item);
             RebuildData();
             return removal;
         }
 
-        public IEnumerator<Sprite> GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             return _sprites.GetEnumerator();
         }

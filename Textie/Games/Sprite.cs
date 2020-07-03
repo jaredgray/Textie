@@ -24,6 +24,7 @@ namespace Textie.Games
                     Height = height
                 }
             };
+            RendererData = new RendererData();
         }
 
         public bool MarkDelete { get; set; }
@@ -32,32 +33,38 @@ namespace Textie.Games
 
         public int LayerOrder { get; set; }
 
-        public void SetData(string data)
+        protected void SetData(List<char> storage, string data)
         {
-            Data = new List<char>(Bounds.Size.Width * Bounds.Size.Height);
             using (StringReader sr = new StringReader(data))
             {
                 var line = "";
-                while(null != (line = sr.ReadLine()))
+                while (null != (line = sr.ReadLine()))
                 {
                     if (string.IsNullOrEmpty(line))
                         continue;
                     for (int i = 0; i < line.Length; i++)
                     {
-                        Data.Add(line[i]);
+                        storage.Add(line[i]);
                     }
                 }
             }
 
-            if(Bounds.Size.Width * Bounds.Size.Height != Data.Count - 1)
+            if (Bounds.Size.Width * Bounds.Size.Height != storage.Count - 1)
             {
                 // something is wrong here
             }
         }
 
-        protected List<char> Data { get; set; }
+        public void SetData(string data)
+        {
+            Data = new List<char>(Bounds.Size.Width * Bounds.Size.Height);
+            SetData(Data, data);
+        }
 
-        public char GetCharAt(int index)
+        protected List<char> Data { get; set; }
+        public RendererData RendererData { get; set; }
+
+        public virtual char GetCharAt(int index)
         {
             if(index < Data.Count)
             {
@@ -73,5 +80,6 @@ namespace Textie.Games
         public virtual void Update() { }
 
         public TrajectoryController TrajectoryController { get; set; }
+
     }
 }

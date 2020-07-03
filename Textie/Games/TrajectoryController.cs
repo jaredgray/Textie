@@ -19,25 +19,25 @@ namespace Textie.Games
         {
             if (sprite.Bounds.Position.X < 0)
             {
-                sprite.Bounds.Position.X++;
+                sprite.Bounds.Position.X += sprite.RendererData.StepX;
                 trajectory.Direction = Direction.Right;
                 OnReverseDirection(sprite, trajectory);
             }
             else if (sprite.Bounds.Position.X + sprite.Bounds.Size.Width > GameArea.Width)
             {
-                sprite.Bounds.Position.X--;
+                sprite.Bounds.Position.X -= sprite.RendererData.StepX;
                 trajectory.Direction = Direction.Left;
                 OnReverseDirection(sprite, trajectory);
             }
             else if (sprite.Bounds.Position.Y < 0)
             {
-                sprite.Bounds.Position.Y++;
+                sprite.Bounds.Position.Y += sprite.RendererData.StepY;
                 trajectory.Direction = Direction.Down;
                 OnReverseDirection(sprite, trajectory);
             }
             else if (sprite.Bounds.Position.Y + sprite.Bounds.Size.Height > GameArea.Height)
             {
-                sprite.Bounds.Position.Y--;
+                sprite.Bounds.Position.Y -= sprite.RendererData.StepY;
                 trajectory.Direction = Direction.Up;
                 OnReverseDirection(sprite, trajectory);
             }
@@ -47,7 +47,7 @@ namespace Textie.Games
         {
 
         }
-        
+
 
         protected virtual void HandleScreenEdgeDisappear(Sprite sprite, ITrajectory trajectory)
         {
@@ -64,36 +64,36 @@ namespace Textie.Games
 
         public void HandleSprite(Sprite sprite)
         {
-            if(sprite is ITrajectory)
+            if (sprite is ITrajectory)
             {
                 var trajectory = sprite as ITrajectory;
-                if (null == trajectory.RendererData)
-                    trajectory.RendererData = new TrajectoryRendererData();
-                if(trajectory.RendererData.IterationsSinceLastMovement  == trajectory.Frequency)
+                if (null == trajectory.TrajectoryRendererData)
+                    trajectory.TrajectoryRendererData = new TrajectoryRendererData();
+                if (trajectory.TrajectoryRendererData.IterationsSinceLastMovement == trajectory.Frequency)
                 {
-                    trajectory.RendererData.IterationsSinceLastMovement = 0;
+                    trajectory.TrajectoryRendererData.IterationsSinceLastMovement = 0;
                     if (trajectory.Direction == Primitives.Direction.Up)
                     {
-                        sprite.Bounds.Position.Y--;
+                        sprite.Bounds.Position.Y -= sprite.RendererData.StepY;
                     }
                     else if (trajectory.Direction == Direction.Right)
                     {
-                        sprite.Bounds.Position.X++;
+                        sprite.Bounds.Position.X += sprite.RendererData.StepX;
                     }
                     else if (trajectory.Direction == Direction.Down)
                     {
-                        sprite.Bounds.Position.Y++;
+                        sprite.Bounds.Position.Y += sprite.RendererData.StepY;
                     }
                     else if (trajectory.Direction == Direction.Left)
                     {
-                        sprite.Bounds.Position.X--;
+                        sprite.Bounds.Position.X -= sprite.RendererData.StepX;
                     }
                     if (trajectory.EdgeOfScreenCondition == EdgeScreenHandling.Disappear)
                         HandleScreenEdgeDisappear(sprite, trajectory);
                     else if (trajectory.EdgeOfScreenCondition == EdgeScreenHandling.ReverseDirection)
                         HandleScreenEdgeReverseDirection(sprite, trajectory);
                 }
-                ++trajectory.RendererData.IterationsSinceLastMovement;
+                ++trajectory.TrajectoryRendererData.IterationsSinceLastMovement;
             }
         }
 

@@ -6,13 +6,14 @@ using Textie.Games.Primitives;
 
 namespace Textie.Games.SpaceInvaders
 {
-    public class AlienGroup : SpriteGroup, ITrajectory
+    public class AlienGroup : SpriteGroup<Alien>, ITrajectory
     {
         const string data = @"COME ON!!!!!";
         public AlienGroup(int frequency, Direction direction)
         {
             Frequency = frequency;
             Direction = direction;
+            EdgeOfScreenCondition = EdgeScreenHandling.ReverseDirection;
             base.SetData(data);
         }
 
@@ -21,6 +22,19 @@ namespace Textie.Games.SpaceInvaders
         public Direction Direction { get; set; }
 
         public EdgeScreenHandling EdgeOfScreenCondition { get; set; }
-        public TrajectoryRendererData RendererData { get; set; }
+        public TrajectoryRendererData TrajectoryRendererData { get; set; }
+
+        public override void Update()
+        {
+            base.Update();
+            if(this.Frequency == this.TrajectoryRendererData.IterationsSinceLastMovement)
+            {
+                foreach (var sprite in this)
+                {
+                    sprite.Update();
+                }
+                base.RebuildData();
+            }
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
+using Textie.Games.Audio;
 using Textie.Games.SpaceInvaders;
 using Textie.TextieInfrastructure;
 
@@ -17,11 +18,13 @@ namespace Textie.Games.Shooter
         {
         }
 
-//        readonly string PlayerData = @"      /\      
-//     /~~\     
-// ^  /~~~~\  ^ 
-//|------------|
-//|------------|";
+        public AudioLoop MainAudioPlayer { get; set; }
+
+        //        readonly string PlayerData = @"      /\      
+        //     /~~\     
+        // ^  /~~~~\  ^ 
+        //|------------|
+        //|------------|";
         readonly string PlayerData = @"    /\    
  ^ /~~\ ^ 
 |--------|
@@ -40,7 +43,9 @@ namespace Textie.Games.Shooter
  /~~\ "; // 2 rows
         public Sprite Player { get; set; }
 
-        public SpriteGroup Alien30 { get; set; }
+        //public SpriteGroup Alien30 { get; set; }
+        //public SpriteGroup Alien20 { get; set; }
+        //public SpriteGroup Alien10 { get; set; }
 
         private TrajectoryController BulletController { get; set; }
         private TrajectoryController AlienController { get; set; }
@@ -50,7 +55,33 @@ namespace Textie.Games.Shooter
             Logger.WriteLine($"Initializing AsciiShooter...");
             BulletController = new TrajectoryController(GameSize, Logger);
             AlienController = new AlienTrajectoryController(GameSize, Logger);
+            SetupAudio();
             BuildCharacters();
+        }
+
+        private void SetupAudio()
+        {
+            MainAudioPlayer = new AudioLoop();
+            MainAudioPlayer.AddTrack(new DelayedAudioTrack(Textie.Properties.Resources.SI01)
+            {
+                DelayType = DelayType.WaitEnd,
+                WaitInMilliseconds = 600
+            });
+            MainAudioPlayer.AddTrack(new DelayedAudioTrack(Textie.Properties.Resources.SI02)
+            {
+                DelayType = DelayType.WaitEnd,
+                WaitInMilliseconds = 600
+            });
+            MainAudioPlayer.AddTrack(new DelayedAudioTrack(Textie.Properties.Resources.SI03)
+            {
+                DelayType = DelayType.WaitEnd,
+                WaitInMilliseconds = 600
+            });
+            MainAudioPlayer.AddTrack(new DelayedAudioTrack(Textie.Properties.Resources.SI04)
+            {
+                DelayType = DelayType.WaitEnd,
+                WaitInMilliseconds = 600
+            });
         }
 
         private void BuildCharacters()
@@ -63,26 +94,57 @@ namespace Textie.Games.Shooter
             Player.SetData(PlayerData);
             Player.Bounds.Position.X = 45;
             Player.Bounds.Position.Y = 22;
+            Player.RendererData.StepX = 2;
             base.GameData.Stage.AddSprite(Player);
 
-            Alien30 = new AlienGroup(20, Primitives.Direction.Right) 
-            { 
+            BuildAlienGroup(3, AlienData30A, AlienData30B);
+            BuildAlienGroup(6, AlienData20A, AlienData20B);
+            BuildAlienGroup(9, AlienData20A, AlienData20B);
+            BuildAlienGroup(12, AlienData10A, AlienData10B);
+            BuildAlienGroup(15, AlienData10A, AlienData10B);
+
+            //Alien30 = new AlienGroup(20, Primitives.Direction.Right) 
+            //{ 
+            //    PauseRebuild = true,
+            //    LayerOrder = 1,
+            //    Frequency = 10,
+            //    TrajectoryController = AlienController,
+
+            //};
+            //Alien30.Bounds.Position.Y = 10;
+            //Alien30.RendererData.StepX = 4;
+            //for (int i = 0; i < 6; i++)
+            //{
+            //    BuildAlien(Alien30, AlienData30A, 6 * i + 5, 0);
+            //}
+            //Alien30.PauseRebuild = false;
+            //Alien30.RebuildData();
+            //GameData.Stage.AddSprite(Alien30);
+        }
+
+        private void BuildAlienGroup(int y, string dataA, string dataB)
+        {
+
+            var group = new AlienGroup(20, Primitives.Direction.Right)
+            {
                 PauseRebuild = true,
                 LayerOrder = 1,
                 Frequency = 10,
-                TrajectoryController = AlienController
+                TrajectoryController = AlienController,
+
             };
-            Alien30.Bounds.Position.Y = 10;
-            for (int i = 0; i < 6; i++)
+            group.Bounds.Position.Y = y;
+            group.RendererData.StepX = 4;
+            for (int i = 0; i < 11; i++)
             {
-                BuildAlien(Alien30, AlienData30A, 6 * i + 5, 0);
+                BuildAlien(group, dataA, dataB, 8 * i + 5, 0);
             }
-            Alien30.PauseRebuild = false;
-            Alien30.RebuildData();
-            GameData.Stage.AddSprite(Alien30);
+            group.PauseRebuild = false;
+            group.RebuildData();
+            GameData.Stage.AddSprite(group);
         }
 
-        private void BuildAlien(SpriteGroup group, string data, int xposition, int yposition)
+        private void BuildAlien(AlienGroup group, string dataA, string dataB, int xposition, int yposition)
         {
             var alien = new Alien(20, Primitives.Direction.Right, new Primitives.Size(6, 2))
             {
@@ -90,7 +152,8 @@ namespace Textie.Games.Shooter
                 Frequency = 10,
                 TrajectoryController = AlienController
             };
-            alien.SetData(data);
+            alien.SetData(dataA);
+            alien.SetData2(dataB);
             alien.Bounds.Position.X = xposition;
             alien.Bounds.Position.Y = yposition;
             group.Add(alien);
@@ -98,12 +161,12 @@ namespace Textie.Games.Shooter
 
         protected override void StartGameLoop()
         {
-
+            MainAudioPlayer.Play();
         }
 
         protected override void StopGameLoop()
         {
-
+            MainAudioPlayer.Pause();
         }
 
         protected override void Update()
@@ -127,19 +190,19 @@ namespace Textie.Games.Shooter
              */
             if (Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_LEFT))
             {
-                --Player.Bounds.Position.X;
+                Player.Bounds.Position.X -= Player.RendererData.StepX;
             }
             if (Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_RIGHT))
             { 
-                ++Player.Bounds.Position.X;
+                Player.Bounds.Position.X += Player.RendererData.StepX;
             }
             if (Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_UP))
             {
-                --Player.Bounds.Position.Y;
+                Player.Bounds.Position.Y -= Player.RendererData.StepY;
             }
             if (Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_DOWN))
             {
-                ++Player.Bounds.Position.Y;
+                Player.Bounds.Position.Y += Player.RendererData.StepY;
             }
             if (Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_SPACE))
             {
