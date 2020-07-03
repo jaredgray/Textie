@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using Textie.Games.Primitives;
 
-namespace Textie.Games.Shooter
+namespace Textie.Games.SpaceInvaders
 {
-    public class Bullet : Sprite, ITrajectory
+    public class Alien : Sprite, ITrajectory
     {
-        const string data = @"*";
-        public Bullet(int frequency, Direction direction)
-            : base(1, 1)
+        const string data = @"COME ON!!!!!";
+        public Alien(int frequency, Direction direction, Size size)
+            : base(size.Width, size.Height)
         {
             Frequency = frequency;
             Direction = direction;

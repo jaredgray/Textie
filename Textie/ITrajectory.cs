@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Permissions;
 using System.Text;
+using Textie.Games;
 using Textie.Games.Primitives;
 
 namespace Textie
@@ -26,5 +27,9 @@ namespace Textie
         /// determines what happens when the edge of the screen is met
         /// </summary>
         EdgeScreenHandling EdgeOfScreenCondition { get; }
+        /// <summary>
+        /// data used by the rendering system. If this is not initialized by the class that owns it, the control system will initialize it
+        /// </summary>
+        TrajectoryRendererData RendererData { get; set; }
     }
 }

@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Textie.Games
 {
-    public interface IUpdateSpriteHandler
+    public class TrajectoryRendererData
     {
-        void HandleSprite(Sprite sprite);
+        public int IterationsSinceLastMovement { get; set; }
     }
 }

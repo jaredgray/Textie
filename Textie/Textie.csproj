@@ -62,12 +62,17 @@
     <Compile Include="Games\Primitives\Bounds.cs" />
     <Compile Include="Games\Primitives\Direction.cs" />
     <Compile Include="Games\Primitives\Size.cs" />
+    <Compile Include="Games\SpaceInvaders\AlienGroup.cs" />
+    <Compile Include="Games\SpaceInvaders\Alien.cs" />
+    <Compile Include="Games\SpaceInvaders\AlienTrajectoryController.cs" />
     <Compile Include="Games\SpaceInvaders\Bullet.cs" />
     <Compile Include="Games\SpaceInvaders\SpaceInvaders.cs" />
     <Compile Include="Games\Sprite.cs" />
+    <Compile Include="Games\SpriteGroup.cs" />
     <Compile Include="Games\Stage.cs" />
     <Compile Include="Games\Primitives\Vector2D.cs" />
     <Compile Include="Games\TrajectoryController.cs" />
+    <Compile Include="Games\TrajectoryRendererData.cs" />
     <Compile Include="ITrajectory.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="PluginInfrastructure\ClikeStringArray.cs" />
@@ -113,6 +118,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Games\SpaceInvaders\Characters.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\PluginInfrastructure\DllExport\NppPlugin.DllExport.targets" />

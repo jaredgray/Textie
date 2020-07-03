@@ -8,6 +8,7 @@ namespace Textie
 {
     public class Logger
     {
+        public static bool APPEND_LOG = true;
         public Logger(string logPath)
         {
             LogPath = logPath;
@@ -21,12 +22,13 @@ namespace Textie
         {
             if(null == sw)
             {
-                sw = new StreamWriter(LogPath, true)
+                sw = new StreamWriter(LogPath, APPEND_LOG)
                 {
                     AutoFlush = true
                 };
             }
         }
+
 
         public void StopLogging()
         {

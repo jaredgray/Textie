@@ -11,7 +11,8 @@ namespace Textie.Games
 {
     public abstract class Game
     {
-        const bool DO_LOG = true;
+        public int UpdateRateInMilliseconds { get; set; }
+        public static bool DO_LOG = true;
         protected IntPtr WindowId = IntPtr.Zero;
         protected INotepadPPGateway Npp { get; private set; }
         protected IScintillaGateway Editor { get; private set; }
@@ -37,15 +38,15 @@ namespace Textie.Games
             Npp = npp;
             Editor = editor;
             Logger = new Logger(@"C:\Temp\TextieGameLog.txt");
+            UpdateRateInMilliseconds = 60;
             GameSize = new Size()
             {
                 Height = 40,
                 Width = 128
             };
-            TrajectoryController = new TrajectoryController(GameSize);
             GameData = new GameData
             {
-                Stage = new Stage(editor, Logger, TrajectoryController, GameSize)
+                Stage = new Stage(editor, Logger, GameSize)
             };
         }
 
@@ -53,14 +54,17 @@ namespace Textie.Games
         {
             if (!IsInitialized)
             {
-                IsInitialized = true;
-                Npp.FileNew();
-                WindowId = Editor.GetDocPointer();
-                IsAlive = IsActive = true;
-                Logger.StartLogging();
-                InitializeInternal();
-                GameThread = new Thread(new ThreadStart(GameLoop));
-                GameThread.Start();
+                Try(() =>
+                {
+                    IsInitialized = true;
+                    Npp.FileNew();
+                    WindowId = Editor.GetDocPointer();
+                    IsAlive = IsActive = true;
+                    Logger.StartLogging();
+                    InitializeInternal();
+                    GameThread = new Thread(new ThreadStart(GameLoop));
+                    GameThread.Start();
+                });
             }
         }
 
@@ -119,7 +123,7 @@ namespace Textie.Games
             {
                 Update();
                 GameData.Stage.Draw();
-                Thread.Sleep(33);
+                Thread.Sleep(UpdateRateInMilliseconds);
                 //SlowGameLoop();
             });
         }

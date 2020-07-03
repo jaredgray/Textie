@@ -28,7 +28,7 @@ namespace Textie.Games
 
         public bool MarkDelete { get; set; }
 
-        public Bounds Bounds { get; private set; }
+        public virtual Bounds Bounds { get; private set; }
 
         public int LayerOrder { get; set; }
 
@@ -49,13 +49,13 @@ namespace Textie.Games
                 }
             }
 
-            if(Bounds.Size.Width + Bounds.Size.Height != Data.Count)
+            if(Bounds.Size.Width * Bounds.Size.Height != Data.Count - 1)
             {
                 // something is wrong here
             }
         }
 
-        private List<char> Data { get; set; }
+        protected List<char> Data { get; set; }
 
         public char GetCharAt(int index)
         {
@@ -63,7 +63,15 @@ namespace Textie.Games
             {
                 return Data[index];
             }
+            else
+            {
+
+            }
             return ' ';
         }
+
+        public virtual void Update() { }
+
+        public TrajectoryController TrajectoryController { get; set; }
     }
 }

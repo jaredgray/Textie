@@ -10,13 +10,12 @@ namespace Textie.Games
     public class Stage
     {
 
-        const bool DO_LOG = false;
+        public static bool DO_LOG = false;
 
-        public Stage(IScintillaGateway editor, Logger logger, TrajectoryController trajectoryController, Size size)
+        public Stage(IScintillaGateway editor, Logger logger, Size size)
         {
             Editor = editor;
             Logger = logger;
-            TrajectoryController = trajectoryController;
             Sprites = new List<Sprite>();
             Size = size;
             InitializeData();
@@ -25,7 +24,6 @@ namespace Textie.Games
         public Size Size { get; set; }
         private IScintillaGateway Editor { get; set; }
         private Logger Logger { get; set; }
-        private TrajectoryController TrajectoryController { get; set; }
 
 
         private List<char> Data { get; set; }
@@ -58,7 +56,7 @@ namespace Textie.Games
             }
         }
 
-        private void ClampSprrite(Sprite sprite)
+        private void ClampSprite(Sprite sprite)
         {
             if (sprite.Bounds.Position.X < 0)
                 sprite.Bounds.Position.X = 0;
@@ -72,7 +70,11 @@ namespace Textie.Games
 
         private void ProcessTrajectorySprites()
         {
-            TrajectoryController.HandleSprites(Sprites);
+            foreach (var sprite in Sprites)
+            {
+                if(null != sprite.TrajectoryController)
+                    sprite.TrajectoryController.HandleSprite(sprite);
+            }
             var deleted = Sprites.Where(x => x.MarkDelete).ToList();
             // TODO: GC should? cleanup these?? maybe
             foreach (var victim in deleted)
@@ -80,14 +82,23 @@ namespace Textie.Games
                 Sprites.Remove(victim);
             }
         }
+        private void ProcessTrajectorySprite(Sprite sprite)
+        {
+            if (null != sprite.TrajectoryController)
+                sprite.TrajectoryController.HandleSprite(sprite);
+
+            if (sprite.MarkDelete)
+                Sprites.Remove(sprite);
+        }
 
         private void DrawSprites()
         {
-            ProcessTrajectorySprites();
+            //ProcessTrajectorySprites();
             foreach (var sprite in Sprites.OrderBy(x => x.LayerOrder))
             {
+                ProcessTrajectorySprite(sprite);
                 // clamp the sprite's position so that it doesn't go out of bounds
-                ClampSprrite(sprite);
+                ClampSprite(sprite);
                 for (int y = 0; y < sprite.Bounds.Size.Height; y++)
                 {
                     for (int x = 0; x < sprite.Bounds.Size.Width; x++)
