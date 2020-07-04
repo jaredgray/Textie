@@ -7,12 +7,12 @@ using Textie.Games.Primitives;
 
 namespace Textie.Games
 {
-    public class Stage
+    public class Scene
     {
 
         public static bool DO_LOG = false;
 
-        public Stage(IScintillaGateway editor, Logger logger, Size size)
+        public Scene(IScintillaGateway editor, Logger logger, Size size)
         {
             Editor = editor;
             Logger = logger;
@@ -21,13 +21,50 @@ namespace Textie.Games
             InitializeData();
         }
 
+        #region public properties
+
         public Size Size { get; set; }
+
+        #endregion
+
+        #region private variables
+
         private IScintillaGateway Editor { get; set; }
         private Logger Logger { get; set; }
 
-
         private List<char> Data { get; set; }
         private List<Sprite> Sprites { get; set; }
+
+        #endregion
+
+        #region public methods
+
+        public virtual void Update()
+        {
+
+        }
+
+        public void Draw()
+        {
+            ClearData();
+            DrawSprites();
+            Editor.ClearAll();
+            StringBuilder linebuilder = new StringBuilder();
+            for (int y = 0; y < Size.Height; y++)
+            {
+                for (int x = 0; x < Size.Width; x++)
+                {
+                    linebuilder.Append(Data[(y * Size.Width) + x]);
+                }
+                linebuilder.AppendLine();
+            }
+            AddTextToEditor(linebuilder.ToString());
+        }
+
+        public bool HasSprite(Func<Sprite, bool> evalueater)
+        {
+            return Sprites.Any(x => evalueater(x));
+        }
 
         public void AddSprite(Sprite sprite)
         {
@@ -38,6 +75,8 @@ namespace Textie.Games
         {
             this.Sprites.Remove(sprite);
         }
+
+        #endregion
 
         private void InitializeData()
         {
@@ -109,23 +148,6 @@ namespace Textie.Games
 
             Sprites.RemoveAll(x => x.MarkDelete);
 
-        }
-
-        public void Draw()
-        {
-            ClearData();
-            DrawSprites();
-            Editor.ClearAll();
-            StringBuilder linebuilder = new StringBuilder();
-            for (int y = 0; y < Size.Height; y++)
-            {
-                for (int x = 0; x < Size.Width; x++)
-                {
-                    linebuilder.Append(Data[(y * Size.Width) + x]);
-                }
-                linebuilder.AppendLine();
-            }
-            AddTextToEditor(linebuilder.ToString());
         }
 
         private void AddTextToEditor(string text)

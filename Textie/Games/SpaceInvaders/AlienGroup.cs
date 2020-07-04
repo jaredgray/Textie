@@ -9,13 +9,15 @@ namespace Textie.Games.SpaceInvaders
     public class AlienGroup : SpriteGroup<Alien>, ITrajectory, ICollider
     {
         const string data = @"COME ON!!!!!";
-        public AlienGroup(int frequency, Direction direction)
+        public AlienGroup(GameData gamedata, int frequency, Direction direction)
+            : base(gamedata)
         {
             Frequency = frequency;
             Direction = direction;
             EdgeOfScreenCondition = EdgeScreenHandling.ReverseDirection;
             base.SetData(data);
             CollisionBehavior = CollisionBehavior.None;
+            CollidesWithTypes = new List<string>();
         }
 
         public int Frequency { get; set; }
@@ -36,10 +38,15 @@ namespace Textie.Games.SpaceInvaders
                 }
                 base.RebuildData();
             }
-            var victims = this.Where(x => x.MarkDelete);
-            foreach (var victim in victims)
+            RemoveDeleted();
+        }
+
+        private void RemoveDeleted()
+        {
+            var victimindexes = this.Where(x => x.MarkDelete).Select(x => this.IndexOf(x)).OrderByDescending(i => i);
+            foreach (var victimIndex in victimindexes)
             {
-                this.Remove(victim);
+                this.RemoveAt(victimIndex);
             }
             if (this.Count == 0)
                 this.MarkDelete = true;
@@ -48,43 +55,13 @@ namespace Textie.Games.SpaceInvaders
 
         public bool HasCollided { get; set; }
         public CollisionBehavior CollisionBehavior { get; set; }
+        public IEnumerable<string> CollidesWithTypes { get; set; }
 
         public void RunDestroySequence()
         {
             throw new NotImplementedException("An AlienGroup cannot run a DestroySequence");
         }
 
-        public override bool CollidesWith(Sprite other)
-        {
-            if (other is ISpriteGroup)
-                return false;
-            if (0 == this.Count)
-            {
-
-            }
-            foreach (var alien in this)
-            {
-                var alienBounds = new Bounds()
-                {
-                    Position = new Vector2D()
-                    {
-                        X = alien.Bounds.Position.X + this.Bounds.Position.X,
-                        Y = alien.Bounds.Position.Y + this.Bounds.Position.Y
-                    },
-                    Size = alien.Bounds.Size
-                };
-                if(alienBounds.IntersectsWith(other.Bounds))
-                {
-                    alien.MarkDelete = true;
-                    alien.RunDestroySequence();
-                    return true;
-                }
-            }
-
-            
-
-            return false;
-        }
 
     }
 }

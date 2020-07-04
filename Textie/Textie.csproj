@@ -66,6 +66,7 @@
     <Compile Include="Games\Audio\IAudioTrack.cs" />
     <Compile Include="Games\Audio\DelayedAudioTrack.cs" />
     <Compile Include="Games\Audio\NAudioTrack.cs" />
+    <Compile Include="Games\CollidableSprite.cs" />
     <Compile Include="Games\CollisionController.cs" />
     <Compile Include="Games\Game.cs" />
     <Compile Include="Games\GameData.cs" />
@@ -77,15 +78,20 @@
     <Compile Include="Games\Primitives\Direction.cs" />
     <Compile Include="Games\Primitives\Size.cs" />
     <Compile Include="Games\RendererData.cs" />
+    <Compile Include="Games\Playerboard.cs" />
     <Compile Include="Games\SpaceInvaders\AlienGroup.cs" />
     <Compile Include="Games\SpaceInvaders\Alien.cs" />
     <Compile Include="Games\SpaceInvaders\AlienGroupCollisionController.cs" />
+    <Compile Include="Games\SpaceInvaders\AlienArsenal.cs" />
     <Compile Include="Games\SpaceInvaders\AlienTrajectoryController.cs" />
     <Compile Include="Games\SpaceInvaders\Bullet.cs" />
+    <Compile Include="Games\SpaceInvaders\Player.cs" />
+    <Compile Include="Games\SpaceInvaders\Scene1.cs" />
     <Compile Include="Games\SpaceInvaders\SpaceInvaders.cs" />
+    <Compile Include="Games\SpaceInvaders\SpriteTypes.cs" />
     <Compile Include="Games\Sprite.cs" />
     <Compile Include="Games\SpriteGroup.cs" />
-    <Compile Include="Games\Stage.cs" />
+    <Compile Include="Games\Scene.cs" />
     <Compile Include="Games\Primitives\Vector2D.cs" />
     <Compile Include="Games\TrajectoryController.cs" />
     <Compile Include="Games\TrajectoryRendererData.cs" />
@@ -158,6 +164,7 @@
     <Content Include="Games\SpaceInvaders\SIPB.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Games\SpaceInvaders\SIPD.wav" />
     <None Include="Games\SpaceInvaders\SIPB.wav" />
     <None Include="Games\SpaceInvaders\SIAD.wav" />
     <None Include="Games\SpaceInvaders\SIAB.wav" />

@@ -11,6 +11,7 @@ namespace Textie.Games
 {
     public abstract class Game
     {
+        public bool StopGame { get; set; }
         public int UpdateRateInMilliseconds { get; set; }
         public static bool DO_LOG = true;
         protected IntPtr WindowId = IntPtr.Zero;
@@ -45,7 +46,7 @@ namespace Textie.Games
             };
             GameData = new GameData
             {
-                Stage = new Stage(editor, Logger, GameSize)
+                Scene = new Scene(editor, Logger, GameSize)
             };
         }
 
@@ -80,7 +81,7 @@ namespace Textie.Games
                     IsActive = false;
                     this.StopGameLoop();
                 }
-                else if (windowId == WindowId && !IsActive)
+                else if (windowId == WindowId && !IsActive && !StopGame)
                 {
                     if (DO_LOG)
                     {
@@ -123,7 +124,8 @@ namespace Textie.Games
             Try(() =>
             {
                 Update();
-                GameData.Stage.Draw();
+                GameData.Scene.Update();
+                GameData.Scene.Draw();
                 Thread.Sleep(UpdateRateInMilliseconds);
                 //SlowGameLoop();
             });

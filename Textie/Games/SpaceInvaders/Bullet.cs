@@ -12,8 +12,8 @@ namespace Textie.Games.Shooter
     public class Bullet : Sprite, ITrajectory, ICollider
     {
         const string data = @"*";
-        public Bullet(int frequency, Direction direction, Stream fireSound)
-            : base(1, 1)
+        public Bullet(GameData gameData, int frequency, Direction direction, Stream fireSound)
+            : base(gameData, 1, 1)
         {
             Frequency = frequency;
             Direction = direction;
@@ -45,6 +45,7 @@ namespace Textie.Games.Shooter
         }
         public bool HasCollided { get; set; }
         public CollisionBehavior CollisionBehavior { get; set; }
+        public IEnumerable<string> CollidesWithTypes { get; set; }
 
         #endregion
     }

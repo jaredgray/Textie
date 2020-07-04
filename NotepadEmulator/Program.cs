@@ -19,7 +19,7 @@ namespace NotepadEmulator
             Kbg.NppPluginNET.Main.Main2(editor, notepad);
             Kbg.NppPluginNET.Main.CommandMenuInit();
             PluginBase._funcItems.Items[Kbg.NppPluginNET.Main.COMMAND_PLAYSHOOTER]._pFunc.Invoke();
-            Stage.DO_LOG = true;
+            Scene.DO_LOG = true;
             while (true)
             {
 

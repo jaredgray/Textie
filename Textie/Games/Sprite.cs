@@ -9,8 +9,9 @@ namespace Textie.Games
 {
     public class Sprite
     {
-        public Sprite(int width, int height)
+        public Sprite(GameData gameData, int width, int height)
         {
+            this.GameData = gameData;
             this.Bounds = new Bounds()
             {
                 Position = new Vector2D()
@@ -25,9 +26,14 @@ namespace Textie.Games
                 }
             };
             RendererData = new RendererData();
+            this.Type = "";
         }
 
-        public bool MarkDelete { get; set; }
+        public GameData GameData { get; set; }
+
+        public string Type { get; set; }
+
+        public virtual bool MarkDelete { get; set; }
 
         public virtual Bounds Bounds { get; private set; }
 
@@ -83,9 +89,14 @@ namespace Textie.Games
 
         public ICollisionController CollisionController { get; set; }
 
-        public virtual bool CollidesWith(Sprite other)
+        public virtual bool CollidesWith(Sprite other, out Sprite collided)
         {
-            return this.Bounds.IntersectsWith(other.Bounds);
+            var result = this.Bounds.IntersectsWith(other.Bounds);
+            if (result)
+                collided = this;
+            else
+                collided = null;
+            return result;
         }
 
     }

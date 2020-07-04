@@ -10,7 +10,7 @@ namespace Textie.Games
     public class SpriteGroup<T> : Sprite, IList<T>, ISpriteGroup
         where T : Sprite
     {
-        public SpriteGroup() : base(0, 0)
+        public SpriteGroup(GameData gameData) : base(gameData, 0, 0)
         {
             _sprites = new List<T>();
         }
@@ -142,5 +142,38 @@ namespace Textie.Games
         }
 
         #endregion
+
+
+        public override bool CollidesWith(Sprite other, out Sprite collided)
+        {
+            collided = null;
+            if (other is ISpriteGroup)
+            {
+                return false;
+            }
+            if (0 == this.Count)
+            {
+
+            }
+            foreach (var sprite in this)
+            {
+                var spriteBounds = new Bounds()
+                {
+                    Position = new Vector2D()
+                    {
+                        X = sprite.Bounds.Position.X + this.Bounds.Position.X,
+                        Y = sprite.Bounds.Position.Y + this.Bounds.Position.Y
+                    },
+                    Size = sprite.Bounds.Size
+                };
+                if (spriteBounds.IntersectsWith(other.Bounds))
+                {
+                    collided = sprite;
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

@@ -16,5 +16,6 @@ namespace Textie.Games
         bool HasCollided { get; set; }
         CollisionBehavior CollisionBehavior { get; set; }
         void RunDestroySequence();
+        IEnumerable<string> CollidesWithTypes { get; set; }
     }
 }

@@ -7,8 +7,23 @@ namespace Textie.Games
 {
     public class GameData
     {
-        public Stage Stage { get; set; }
+        public Scene Scene { get; set; }
 
-        // number of players
+        public Playerboard Playerboard { get; private set; }
+
+        public void SetPlayerboard(Playerboard board)
+        {
+            if(null != Playerboard)
+            {
+                Scene.RemoveSprite(Playerboard);
+            }
+
+            this.Playerboard = board;
+            Scene.AddSprite(Playerboard);
+        }
+
+        public bool PlayerDeath { get; set; }
+        public bool IsComplete { get; set; }
+        public int Level { get; set; }
     }
 }

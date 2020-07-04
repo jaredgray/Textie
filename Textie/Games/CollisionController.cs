@@ -15,9 +15,6 @@ namespace Textie.Games
 
         public void HandleSprite(Sprite sprite, IEnumerable<Sprite> others)
         {
-            var spriteCollider = sprite as ICollider;
-            if (sprite.MarkDelete || spriteCollider.HasCollided)
-                return;
             foreach (var candidate in others)
             {
                 var candidateCollider = candidate as ICollider;
@@ -25,12 +22,19 @@ namespace Textie.Games
                 if (candidate == sprite || candidateCollider.HasCollided)
                     continue;
 
-                if(sprite.CollidesWith(candidate))
+                if(sprite.CollidesWith(candidate, out var collided))
                 {
+                    var spriteCollider = collided as ICollider;
+                    if (sprite.MarkDelete || spriteCollider.HasCollided)
+                        return;
+
+                    if (!spriteCollider.CollidesWithTypes.Any(x => x == candidate.Type))
+                        return;
+
                     spriteCollider.HasCollided = candidateCollider.HasCollided = true;
                     if(spriteCollider.CollisionBehavior == CollisionBehavior.Remove)
                     {
-                        sprite.MarkDelete = true;
+                        collided.MarkDelete = true;
                     }
                     else if(spriteCollider.CollisionBehavior == CollisionBehavior.RunDestroySequence)
                     {
