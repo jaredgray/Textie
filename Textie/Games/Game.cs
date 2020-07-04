@@ -17,7 +17,6 @@ namespace Textie.Games
         protected INotepadPPGateway Npp { get; private set; }
         protected IScintillaGateway Editor { get; private set; }
         internal Logger Logger { get; set; }
-        protected TrajectoryController TrajectoryController { get; set; }
 
 
         protected GameData GameData { get; set; }

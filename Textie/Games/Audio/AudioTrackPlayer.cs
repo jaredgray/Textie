@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 
 namespace Textie.Games.Audio
 {
-    public class AudioLoop : IPlayAudio
+    public class AudioTrackPlayer : IPlayAudio
     {
-        public AudioLoop()
+        public AudioTrackPlayer()
         {
             IsActive = true;
             TrackIndex = -1;
@@ -25,6 +23,7 @@ namespace Textie.Games.Audio
 
         public bool IsPlaying { get; set; }
 
+        public bool IsLooping { get; set; }
 
         public List<IAudioTrack> Tracks { get; set; }
 
@@ -39,10 +38,11 @@ namespace Textie.Games.Audio
         {
             while (IsActive)
             {
-                if(IsPlaying)
+                if (IsPlaying)
                 {
                     AudioLoopIteration();
                 }
+                Thread.Sleep(100);
             }
         }
 
@@ -50,7 +50,7 @@ namespace Textie.Games.Audio
         {
             for (int i = 0; i < Tracks.Count; i++)
             {
-                if(IsPlaying)
+                if (IsPlaying)
                 {
                     TrackIndex = i;
                     Tracks[TrackIndex].Play();
@@ -60,6 +60,8 @@ namespace Textie.Games.Audio
                     Tracks[TrackIndex].Pause();
                 }
             }
+            if (!IsLooping)
+                IsPlaying = false;
         }
 
         public void Pause()

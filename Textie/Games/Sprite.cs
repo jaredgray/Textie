@@ -81,5 +81,12 @@ namespace Textie.Games
 
         public TrajectoryController TrajectoryController { get; set; }
 
+        public ICollisionController CollisionController { get; set; }
+
+        public virtual bool CollidesWith(Sprite other)
+        {
+            return this.Bounds.IntersectsWith(other.Bounds);
+        }
+
     }
 }

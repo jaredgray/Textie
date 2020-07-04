@@ -50,11 +50,18 @@ namespace Textie.Games.Shooter
         private TrajectoryController BulletController { get; set; }
         private TrajectoryController AlienController { get; set; }
 
+        public CollisionController CollisionController { get; set; }
+        public AlienGroupCollisionController AlienGroupCollisionController { get; set; }
+
+        private Bullet CurrentBullet { get; set; }
+
         protected override void InitializeInternal()
         {
             Logger.WriteLine($"Initializing AsciiShooter...");
             BulletController = new TrajectoryController(GameSize, Logger);
             AlienController = new AlienTrajectoryController(GameSize, Logger);
+            CollisionController = new CollisionController();
+            AlienGroupCollisionController = new AlienGroupCollisionController();
             SetupAudio();
             BuildCharacters();
         }
@@ -93,8 +100,9 @@ namespace Textie.Games.Shooter
             };
             Player.SetData(PlayerData);
             Player.Bounds.Position.X = 45;
-            Player.Bounds.Position.Y = 22;
+            Player.Bounds.Position.Y = 36;
             Player.RendererData.StepX = 2;
+            Player.RendererData.StepY = 0;
             base.GameData.Stage.AddSprite(Player);
 
             BuildAlienGroup(3, AlienData30A, AlienData30B);
@@ -102,24 +110,6 @@ namespace Textie.Games.Shooter
             BuildAlienGroup(9, AlienData20A, AlienData20B);
             BuildAlienGroup(12, AlienData10A, AlienData10B);
             BuildAlienGroup(15, AlienData10A, AlienData10B);
-
-            //Alien30 = new AlienGroup(20, Primitives.Direction.Right) 
-            //{ 
-            //    PauseRebuild = true,
-            //    LayerOrder = 1,
-            //    Frequency = 10,
-            //    TrajectoryController = AlienController,
-
-            //};
-            //Alien30.Bounds.Position.Y = 10;
-            //Alien30.RendererData.StepX = 4;
-            //for (int i = 0; i < 6; i++)
-            //{
-            //    BuildAlien(Alien30, AlienData30A, 6 * i + 5, 0);
-            //}
-            //Alien30.PauseRebuild = false;
-            //Alien30.RebuildData();
-            //GameData.Stage.AddSprite(Alien30);
         }
 
         private void BuildAlienGroup(int y, string dataA, string dataB)
@@ -131,7 +121,7 @@ namespace Textie.Games.Shooter
                 LayerOrder = 1,
                 Frequency = 10,
                 TrajectoryController = AlienController,
-
+                CollisionController = AlienGroupCollisionController
             };
             group.Bounds.Position.Y = y;
             group.RendererData.StepX = 4;
@@ -141,6 +131,7 @@ namespace Textie.Games.Shooter
             }
             group.PauseRebuild = false;
             group.RebuildData();
+            group.Bounds.Size.Lock();
             GameData.Stage.AddSprite(group);
         }
 
@@ -204,17 +195,20 @@ namespace Textie.Games.Shooter
             {
                 Player.Bounds.Position.Y += Player.RendererData.StepY;
             }
-            if (Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_SPACE))
+            if ((null == CurrentBullet || CurrentBullet.MarkDelete) && Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_SPACE))
             {
-                var missile = new Bullet(1, Primitives.Direction.Up)
+                CurrentBullet = new Bullet(1, Primitives.Direction.Up, Textie.Properties.Resources.SIPB)
                 {
                     EdgeOfScreenCondition = EdgeScreenHandling.Disappear,
                     LayerOrder = int.MaxValue,
-                    TrajectoryController = BulletController
+                    TrajectoryController = BulletController,
+                    CollisionController = CollisionController
                 };
-                missile.Bounds.Position.X = Player.Bounds.Position.X + 4;
-                missile.Bounds.Position.Y = Player.Bounds.Position.Y - 1;// move the missile down by one since the game will move it up on the first iteration of drawing
-                GameData.Stage.AddSprite(missile);
+                CurrentBullet.RendererData.StepY = 2;
+                CurrentBullet.Bounds.Position.X = Player.Bounds.Position.X + 4;
+                CurrentBullet.Bounds.Position.Y = Player.Bounds.Position.Y - 1;// move the missile down by one since the game will move it up on the first iteration of drawing
+                CurrentBullet.Fire();
+                GameData.Stage.AddSprite(CurrentBullet);
             }
         }
 

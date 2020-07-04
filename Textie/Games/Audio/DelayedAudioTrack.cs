@@ -13,39 +13,29 @@ namespace Textie.Games.Audio
         WaitBeginning,
         WaitEnd
     }
-    public class DelayedAudioTrack : IAudioTrack
+    public class DelayedAudioTrack : AudioTrack
     {
         public DelayedAudioTrack()
+            : base()
         {
             DelayType = DelayType.WaitEnd;
             WaitInMilliseconds = 0;
         }
         public DelayedAudioTrack(Stream stream)
-            : this()
+            : base(stream)
         {
-            OpenStream(stream);
-        }
-
-        public SoundPlayer Player { get; set; }
-
-        public void OpenStream(Stream stream)
-        {
-            Player = new System.Media.SoundPlayer(stream);
+            DelayType = DelayType.WaitEnd;
+            WaitInMilliseconds = 0;
         }
 
         public DelayType DelayType { get; set; }
 
         public int WaitInMilliseconds { get; set; }
 
-        public void Play()
+        public override void Play()
         {
-            Player.Play();
+            base.Play();
             Thread.Sleep(WaitInMilliseconds);
-        }
-
-        public void Pause()
-        {
-            Player.Stop();
         }
     }
 }

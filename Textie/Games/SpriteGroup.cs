@@ -7,7 +7,7 @@ using Textie.Games.Primitives;
 
 namespace Textie.Games
 {
-    public class SpriteGroup<T> : Sprite, IList<T>
+    public class SpriteGroup<T> : Sprite, IList<T>, ISpriteGroup
         where T : Sprite
     {
         public SpriteGroup() : base(0, 0)
@@ -33,6 +33,12 @@ namespace Textie.Games
 
         public void RebuildData()
         {
+            if (!this.Any())
+            {
+                Data = new List<char>();
+                this.Bounds.Size = new Size();
+                return;
+            }
             var maxX = _sprites.Max(x => x.Bounds.Position.X + x.Bounds.Size.Width);
             var maxY = _sprites.Max(x => x.Bounds.Position.Y + x.Bounds.Size.Height);
             this.Bounds.Size = new Size()

@@ -68,35 +68,30 @@ namespace Textie.Games
                 sprite.Bounds.Position.Y = Size.Height - sprite.Bounds.Size.Height;
         }
 
-        private void ProcessTrajectorySprites()
-        {
-            foreach (var sprite in Sprites)
-            {
-                if(null != sprite.TrajectoryController)
-                    sprite.TrajectoryController.HandleSprite(sprite);
-            }
-            var deleted = Sprites.Where(x => x.MarkDelete).ToList();
-            // TODO: GC should? cleanup these?? maybe
-            foreach (var victim in deleted)
-            {
-                Sprites.Remove(victim);
-            }
-        }
         private void ProcessTrajectorySprite(Sprite sprite)
         {
             if (null != sprite.TrajectoryController)
                 sprite.TrajectoryController.HandleSprite(sprite);
-
-            if (sprite.MarkDelete)
-                Sprites.Remove(sprite);
+        }
+        private void ProcessCollisionSprite(Sprite sprite, IEnumerable<Sprite> collidables)
+        {
+            if (sprite is ICollider && null != sprite.CollisionController)
+                sprite.CollisionController.HandleSprite(sprite, collidables);
         }
 
         private void DrawSprites()
         {
-            //ProcessTrajectorySprites();
+            var collidables = Sprites.Where(x => x is ICollider);
             foreach (var sprite in Sprites.OrderBy(x => x.LayerOrder))
             {
                 ProcessTrajectorySprite(sprite);
+                if (sprite.MarkDelete)
+                    continue;
+
+                ProcessCollisionSprite(sprite, collidables);
+                if (sprite.MarkDelete)
+                    continue;
+
                 sprite.Update();
                 // clamp the sprite's position so that it doesn't go out of bounds
                 ClampSprite(sprite);
@@ -111,6 +106,9 @@ namespace Textie.Games
                     }
                 }
             }
+
+            Sprites.RemoveAll(x => x.MarkDelete);
+
         }
 
         public void Draw()

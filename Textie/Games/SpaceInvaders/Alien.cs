@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Textie.Games.Audio;
 using Textie.Games.Primitives;
 
 namespace Textie.Games.SpaceInvaders
 {
-    public class Alien : Sprite, ITrajectory
+    public class Alien : Sprite, ITrajectory, ICollider
     {
         const string data = @"COME ON!!!!!";
         public Alien(int frequency, Direction direction, Size size)
@@ -16,7 +17,12 @@ namespace Textie.Games.SpaceInvaders
             Direction = direction;
             base.SetData(data);
             DataIndex = 1; // set data index to 1 so it will flip back to 0 on first draw
+            CollisionBehavior = CollisionBehavior.RunDestroySequence;
+            DeathPlayer = new AudioTrackPlayer();
+            DeathPlayer.AddTrack(new AudioTrack(Textie.Properties.Resources.SIAD));
         }
+
+        public AudioTrackPlayer DeathPlayer { get; set; }
 
         private int DataIndex { get; set; }
 
@@ -67,5 +73,17 @@ namespace Textie.Games.SpaceInvaders
             }
             return ' ';
         }
+
+        #region ICollider members
+
+        public void RunDestroySequence()
+        {
+            this.MarkDelete = true;
+            DeathPlayer.Play();
+        }
+        public bool HasCollided { get; set; }
+        public CollisionBehavior CollisionBehavior { get; set; }
+
+        #endregion
     }
 }

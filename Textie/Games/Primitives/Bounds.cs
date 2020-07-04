@@ -13,7 +13,17 @@ namespace Textie.Games.Primitives
             Size = new Size();
         }
         public Vector2D Position { get; set; }
-        public Size Size { get; set; }
+        public Size Size 
+        {
+            get { return _size; }
+            set
+            {
+                if (null != _size && _size.IsLocked())
+                    return;
+                _size = value;
+            }
+        }
+        private Size _size;
 
         public void MoveLeft(int amount)
         {
@@ -32,6 +42,17 @@ namespace Textie.Games.Primitives
             this.Position.Y += amount;
         }
 
-
+        /// <summary>
+        /// Determines if this bounds intersects with another
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool IntersectsWith(Bounds other)
+        {
+            return (other.Position.X < this.Position.X + this.Size.Width) &&
+            (this.Position.X < (other.Position.X + other.Size.Width)) &&
+            (other.Position.Y < this.Position.Y + this.Size.Height) &&
+            (this.Position.Y < other.Position.Y + other.Size.Height);
+        }
     }
 }

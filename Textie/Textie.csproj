@@ -50,6 +50,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NAudio, Version=1.10.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.10.0\lib\net35\NAudio.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -57,11 +60,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Games\Audio\AudioLoop.cs" />
+    <Compile Include="Games\Audio\AudioTrack.cs" />
+    <Compile Include="Games\Audio\AudioTrackPlayer.cs" />
     <Compile Include="Games\Audio\IPlayAudio.cs" />
     <Compile Include="Games\Audio\IAudioTrack.cs" />
     <Compile Include="Games\Audio\DelayedAudioTrack.cs" />
+    <Compile Include="Games\Audio\NAudioTrack.cs" />
+    <Compile Include="Games\CollisionController.cs" />
     <Compile Include="Games\Game.cs" />
     <Compile Include="Games\GameData.cs" />
+    <Compile Include="Games\ICollider.cs" />
+    <Compile Include="Games\ICollisionController.cs" />
+    <Compile Include="Games\ISpriteGroup.cs" />
     <Compile Include="Games\IUpdateSpriteHandler.cs" />
     <Compile Include="Games\Primitives\Bounds.cs" />
     <Compile Include="Games\Primitives\Direction.cs" />
@@ -69,6 +79,7 @@
     <Compile Include="Games\RendererData.cs" />
     <Compile Include="Games\SpaceInvaders\AlienGroup.cs" />
     <Compile Include="Games\SpaceInvaders\Alien.cs" />
+    <Compile Include="Games\SpaceInvaders\AlienGroupCollisionController.cs" />
     <Compile Include="Games\SpaceInvaders\AlienTrajectoryController.cs" />
     <Compile Include="Games\SpaceInvaders\Bullet.cs" />
     <Compile Include="Games\SpaceInvaders\SpaceInvaders.cs" />
@@ -126,10 +137,35 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Games\SpaceInvaders\Characters.txt" />
+    <Content Include="Games\SpaceInvaders\SI01.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Games\SpaceInvaders\SI02.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Games\SpaceInvaders\SI03.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Games\SpaceInvaders\SI04.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Games\SpaceInvaders\SIAB.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Games\SpaceInvaders\SIAD.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Games\SpaceInvaders\SIPB.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Games\SpaceInvaders\SIPB.wav" />
+    <None Include="Games\SpaceInvaders\SIAD.wav" />
+    <None Include="Games\SpaceInvaders\SIAB.wav" />
     <None Include="Games\SpaceInvaders\SI04.wav" />
     <None Include="Games\SpaceInvaders\SI03.wav" />
     <None Include="Games\SpaceInvaders\SI02.wav" />
     <None Include="Games\SpaceInvaders\SI01.wav" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\PluginInfrastructure\DllExport\NppPlugin.DllExport.targets" />
