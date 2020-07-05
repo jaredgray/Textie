@@ -12,8 +12,8 @@ namespace Textie.Games.Shooter
     public class Bullet : Sprite, ITrajectory, ICollider
     {
         const string data = @"*";
-        public Bullet(GameData gameData, int frequency, Direction direction, Stream fireSound)
-            : base(gameData, 1, 1)
+        public Bullet(GameData gameData, Scene scene, int frequency, Direction direction, Stream fireSound)
+            : base(gameData, scene, 1, 1)
         {
             Frequency = frequency;
             Direction = direction;

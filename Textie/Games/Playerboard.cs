@@ -7,7 +7,7 @@ namespace Textie.Games
 {
     public class Playerboard : Sprite
     {
-        public Playerboard(string lifeCharacters, int initialLives) : base(null, 20, 1)
+        public Playerboard(string lifeCharacters, int initialLives) : base(null, null, 20, 1)
         {
             _lifeCharacters = lifeCharacters;
             _lives = initialLives;

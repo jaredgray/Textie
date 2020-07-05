@@ -7,7 +7,7 @@ namespace Textie.Games
 {
     public class CollidableSprite : Sprite, ICollider
     {
-        public CollidableSprite(GameData gameData, int width, int height) : base(gameData, width, height)
+        public CollidableSprite(GameData gameData, Scene scene, int width, int height) : base(gameData, scene, width, height)
         {
         }
 

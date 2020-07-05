@@ -9,10 +9,11 @@ namespace Textie.Games
 {
     public class Sprite
     {
-        public Sprite(GameData gameData, int width, int height)
+        public Sprite(GameData gameData, Scene scene, int width, int height)
         {
-            this.GameData = gameData;
-            this.Bounds = new Bounds()
+            GameData = gameData;
+            Scene = scene;
+            Bounds = new Bounds()
             {
                 Position = new Vector2D()
                 {
@@ -26,8 +27,10 @@ namespace Textie.Games
                 }
             };
             RendererData = new RendererData();
-            this.Type = "";
+            Type = "";
         }
+
+        public Scene Scene { get; set; }
 
         public GameData GameData { get; set; }
 

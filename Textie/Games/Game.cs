@@ -9,9 +9,9 @@ using Textie.Games.Primitives;
 
 namespace Textie.Games
 {
-    public abstract class Game
+    public abstract class Game<TScene>
+        where TScene : Scene
     {
-        public bool StopGame { get; set; }
         public int UpdateRateInMilliseconds { get; set; }
         public static bool DO_LOG = true;
         protected IntPtr WindowId = IntPtr.Zero;
@@ -21,14 +21,14 @@ namespace Textie.Games
 
 
         protected GameData GameData { get; set; }
+        public TScene Scene { get; set; }
+
 
         #region Game variables 
 
         protected Size GameSize { get; }
 
         private bool IsInitialized { get; set; }
-        protected bool IsAlive { get; set; }
-        protected bool IsActive { get; set; }
         private Thread GameThread;
 
         #endregion
@@ -44,9 +44,9 @@ namespace Textie.Games
                 Height = 40,
                 Width = 128
             };
+            // TODO: Scenes should be loaded from an inheriting game object which decides what happens in it's scenes
             GameData = new GameData
             {
-                Scene = new Scene(editor, Logger, GameSize)
             };
         }
 
@@ -59,9 +59,10 @@ namespace Textie.Games
                     IsInitialized = true;
                     Npp.FileNew();
                     WindowId = Editor.GetDocPointer();
-                    IsAlive = IsActive = true;
+                    GameData.IsAlive = GameData.IsActive = true;
                     Logger.StartLogging();
                     InitializeInternal();
+                    //Scene.ini
                     GameThread = new Thread(new ThreadStart(GameLoop));
                     GameThread.Start();
                 });
@@ -70,25 +71,31 @@ namespace Textie.Games
 
         public void NotifyCurrentWindow(IntPtr windowId)
         {
-            if (IsAlive)
+            /*
+                The point of this method is to hadle when the user switches tabs. if we don't
+                stop the game loop the game will continue to draw onto the tab the user switched into.
+                The variable StopGame is used for the inheriting game to force the game to stop. 
+                Since this is called over and over from the NPP message loop you can't just set the 
+                IsActiveFlag to false since windowId == WindowId && !IsActive will evaluate to true
+                which would just activate the game again
+             */
+            if (GameData.IsAlive)
             {
-                if (windowId != WindowId && IsActive)
+                if (windowId != WindowId && GameData.IsActive && !GameData.StopGame)
                 {
                     if (DO_LOG)
                     {
                         Logger.WriteLine($"{WindowId}-{DateTime.Now} Pausing Game");
                     }
-                    IsActive = false;
-                    this.StopGameLoop();
+                    GameData.IsActive = false;
                 }
-                else if (windowId == WindowId && !IsActive && !StopGame)
+                else if (windowId == WindowId && !GameData.IsActive && !GameData.StopGame)
                 {
                     if (DO_LOG)
                     {
                         Logger.WriteLine($"{WindowId}-{DateTime.Now} Resuming Game");
                     }
-                    IsActive = true;
-                    this.StartGameLoop();
+                    GameData.IsActive = true;
                 }
             }
         }
@@ -97,7 +104,8 @@ namespace Textie.Games
         {
             if (windowId == WindowId)
             {
-                CleanupGame();
+                GameData.IsActive = GameData.IsAlive = false;              
+                //CleanupGame();
                 return true;
             }
             return false;
@@ -109,14 +117,19 @@ namespace Textie.Games
             {
                 Logger.WriteLine($"Beginning Game Loop. WindowId: {WindowId}");
             }
+            // TODO: change scene should exist within the game loop. need some detection method to determine when it needs changed
+            //       or possibly just let the inheriting game figure this out
+            ChangeScene();
             StartGameLoop();
-            while (IsAlive)
+            Scene.GameLoopStarted();
+            while (GameData.IsAlive)
             {
-                if (IsActive)
+                if (GameData.IsActive)
                 {
                     GameLoopIteration();
                 }
             }
+            CleanupGame();
         }
 
         private void GameLoopIteration()
@@ -124,8 +137,8 @@ namespace Textie.Games
             Try(() =>
             {
                 Update();
-                GameData.Scene.Update();
-                GameData.Scene.Draw();
+                Scene.Update();
+                Scene.Draw();
                 Thread.Sleep(UpdateRateInMilliseconds);
                 //SlowGameLoop();
             });
@@ -139,9 +152,10 @@ namespace Textie.Games
 
         private void CleanupGame()
         {
-            IsAlive = false;
-            IsActive = false;
+            GameData.IsAlive = false;
+            GameData.IsActive = false;
             StopGameLoop();
+            Scene.GameLoopStopped();
             Logger.WriteLine($"{WindowId}-{DateTime.Now} CleanupGame()");
             Logger.StopLogging();
             Logger = null;
@@ -153,7 +167,7 @@ namespace Textie.Games
         protected abstract void InitializeInternal();
         protected abstract void StartGameLoop();
         protected abstract void StopGameLoop();
-
+        protected abstract void ChangeScene();
         protected abstract void Update();
 
 
@@ -175,7 +189,7 @@ namespace Textie.Games
 
         protected void Fail(Exception ex)
         {
-            IsAlive = IsActive = false;
+            GameData.IsAlive = GameData.IsActive = false;
             Npp.FileNew();
             var exmsg = ex.ToString();
             Editor.AppendText(exmsg.Length, exmsg);

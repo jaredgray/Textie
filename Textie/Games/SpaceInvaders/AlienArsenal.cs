@@ -8,8 +8,8 @@ namespace Textie.Games.SpaceInvaders
 {
     public class AlienArsenal : Sprite
     {
-        public AlienArsenal(GameData gameData, TrajectoryController bulletController, ICollisionController collisionController)
-            : base(gameData, 0, 0)
+        public AlienArsenal(GameData gameData, Scene scene, TrajectoryController bulletController, ICollisionController collisionController)
+            : base(gameData, scene, 0, 0)
         {
             this.AlienGroups = new List<AlienGroup>();
             BulletController = bulletController;

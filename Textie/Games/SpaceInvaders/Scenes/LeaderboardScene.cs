@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Textie.Games.SpaceInvaders
 {
-    public class Scene1
+    class LeaderboardScene
     {
     }
 }

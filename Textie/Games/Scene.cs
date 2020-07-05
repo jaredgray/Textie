@@ -9,13 +9,13 @@ namespace Textie.Games
 {
     public class Scene
     {
-
         public static bool DO_LOG = false;
 
-        public Scene(IScintillaGateway editor, Logger logger, Size size)
+        public Scene(IScintillaGateway editor, Logger logger, Size size, GameData gameData)
         {
             Editor = editor;
             Logger = logger;
+            GameData = gameData;
             Sprites = new List<Sprite>();
             Size = size;
             InitializeData();
@@ -25,15 +25,24 @@ namespace Textie.Games
 
         public Size Size { get; set; }
 
+        public Playerboard Playerboard { get; private set; }
+
         #endregion
 
         #region private variables
 
-        private IScintillaGateway Editor { get; set; }
-        private Logger Logger { get; set; }
-
         private List<char> Data { get; set; }
         private List<Sprite> Sprites { get; set; }
+
+        #endregion
+
+        #region protected variables 
+
+        protected IScintillaGateway Editor { get; set; }
+
+        protected Logger Logger { get; set; }
+
+        protected GameData GameData { get; set; }
 
         #endregion
 
@@ -76,7 +85,38 @@ namespace Textie.Games
             this.Sprites.Remove(sprite);
         }
 
+        public void SetPlayerboard(Playerboard board)
+        {
+            if (null != Playerboard)
+            {
+                RemoveSprite(Playerboard);
+            }
+
+            Playerboard = board;
+            AddSprite(Playerboard);
+        }
+
         #endregion
+
+        #region Scene overridable interface 
+
+        public virtual void InitializeScene()
+        {
+
+        }
+
+        public virtual void GameLoopStarted()
+        {
+
+        }
+        public virtual void GameLoopStopped()
+        {
+
+        }
+
+        #endregion 
+
+        #region Game Loop Drawing Methods
 
         private void InitializeData()
         {
@@ -162,5 +202,7 @@ namespace Textie.Games
                 }
             }
         }
+
+        #endregion
     }
 }

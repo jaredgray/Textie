@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 using Kbg.NppPluginNET.PluginInfrastructure;
 using Textie;
-using Textie.Games;
 using Textie.Games.Shooter;
-using Textie.TextieInfrastructure;
-using static Textie.TextieInfrastructure.GlobalKeyboardHook;
 
 namespace Kbg.NppPluginNET
 {
@@ -23,15 +14,12 @@ namespace Kbg.NppPluginNET
         static IScintillaGateway editor;
         static INotepadPPGateway notepad;
         static Logger logger;
-        static GlobalKeyboardHook KeyboarHook;
         public static readonly int COMMAND_SORT = 0;
         public static readonly int COMMAND_PLAYSHOOTER = 1;
         public static readonly int COMMAND_STARTLOGGING = 2;
         public static readonly int COMMAND_ENDLOGGING = 3;
 
         static SpaceInvaders shootergame;
-
-        static StreamWriter sw;
 
         static Main()
         {
@@ -40,25 +28,15 @@ namespace Kbg.NppPluginNET
             shootergame = new SpaceInvaders(notepad, editor);
             logger = new Logger(@"C:\Temp\TextieLog.txt");
             editor.StartRecord();
-            
-            //editor.SetBufferedDraw(true);
-            editor.SetCaretFore(new Colour(255, 145, 0));
-
             logger.StartLogging();
 
-            //KeyboarHook = new GlobalKeyboardHook(logger);
-            //KeyboarHook.KeyboardPressed += KeyboarHook_KeyboardPressed;
-            //var form = ;
-            //BeginLogging();
-            //logger.WriteLine($"Is Form NULL: {null == form}");
-
         }
 
-        private static void KeyboarHook_KeyboardPressed(object sender, GlobalKeyboardHookEventArgs e)
-        {
-
-        }
-
+        /// <summary>
+        /// entry point for an application other than Notepad++. this allows another application to run and even render the game
+        /// </summary>
+        /// <param name="pEditor"></param>
+        /// <param name="pNotepad"></param>
         public static void Main2(IScintillaGateway pEditor, INotepadPPGateway pNotepad)
         {
             editor = null;
@@ -70,39 +48,15 @@ namespace Kbg.NppPluginNET
             shootergame = new SpaceInvaders(notepad, editor);
         }
 
-        //public static void OnMessageProc(uint Message, IntPtr wParam, IntPtr lParam)
-        //{
-        //    var wparamTyped = wParam.ToInt32();
-        //    var lParamTyped = lParam.ToInt32();
-        //    logger.WriteLine("OnMessageProc called");
-        //    if (Enum.IsDefined(typeof(KeyboardState), wparamTyped))
-        //    {
-        //        if(((KeyboardState)wparamTyped) == KeyboardState.KeyDown)
-        //        {
-        //            int vkCode = Marshal.ReadInt32(lParam);
-        //            KeyboarEventBroadcaster.FireKeyDownWin((Keys)vkCode);
-        //        }
-        //    }
-        //}
-
+        /// <summary>
+        /// handles messages sent from Notepad++ or another application
+        /// </summary>
+        /// <param name="notification"></param>
         public static void OnNotification(ScNotification notification)
         {
-            // This method is invoked whenever something is happening in notepad++
-            // use eg. as
-            //if (notification.Header.Code == (uint)NppMsg.)
-            //{
-
-            //}
-            // or
-            //
-            // if (notification.Header.Code == (uint)SciMsg.SCNxxx)
-            // { ... }
-
-            // get doc pointer
+            // get document pointer and notify game
             var docpointer = editor.GetDocPointer();
             shootergame.NotifyCurrentWindow(docpointer);
-
-            //notification.Header.hwndFrom
 
             var action = "";
             Try(() => action = Enum.GetName(typeof(NppMsg), notification.Header.Code), false);
@@ -164,7 +118,7 @@ namespace Kbg.NppPluginNET
 
         #endregion
 
-        internal static void SortCaseInsensitive()
+        private static void SortCaseInsensitive()
         {
             try
             {
@@ -182,13 +136,13 @@ namespace Kbg.NppPluginNET
             }
         }
 
-        internal static void PlaySpaceInvadersGame()
+        private static void PlaySpaceInvadersGame()
         {
             shootergame.Initialize();
         }
 
 
-        static TupleList<string, string> GetTextFromEditorAsDictionary()
+        private static TupleList<string, string> GetTextFromEditorAsDictionary()
         {
             var requestLength = int.MaxValue;
             var currentText = editor.GetText(requestLength);
@@ -204,13 +158,13 @@ namespace Kbg.NppPluginNET
             return textlist;
         }
 
-        static void AddTextToEditor(string text)
+        private static void AddTextToEditor(string text)
         {
             editor.AddText(text.Length, text);
             editor.NewLine();
         }
 
-        static void Try(Action action, bool showError = true)
+        private static void Try(Action action, bool showError = true)
         {
             try
             {
@@ -223,7 +177,7 @@ namespace Kbg.NppPluginNET
             }
         }
 
-        static void Fail(Exception ex)
+        private static void Fail(Exception ex)
         {
             notepad.FileNew();
             var exmsg = ex.ToString();

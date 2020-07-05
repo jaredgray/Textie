@@ -9,8 +9,8 @@ namespace Textie.Games.SpaceInvaders
     public class AlienGroup : SpriteGroup<Alien>, ITrajectory, ICollider
     {
         const string data = @"COME ON!!!!!";
-        public AlienGroup(GameData gamedata, int frequency, Direction direction)
-            : base(gamedata)
+        public AlienGroup(GameData gamedata, Scene scene, int frequency, Direction direction)
+            : base(gamedata, scene)
         {
             Frequency = frequency;
             Direction = direction;

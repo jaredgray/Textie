@@ -8,8 +8,8 @@ namespace Textie.Games.SpaceInvaders
     public class Alien : Sprite, ITrajectory, ICollider
     {
         const string data = @"COME ON!!!!!";
-        public Alien(GameData gameData, int frequency, Direction direction, Size size, int worth)
-            : base(gameData, size.Width, size.Height)
+        public Alien(GameData gameData, Scene scene, int frequency, Direction direction, Size size, int worth)
+            : base(gameData, scene, size.Width, size.Height)
         {
             this.Worth = worth;
             Frequency = frequency;
@@ -38,7 +38,7 @@ namespace Textie.Games.SpaceInvaders
                 {
                     if(value)
                     {
-                        GameData.Playerboard.AddPoints(this.Worth);
+                        Scene.Playerboard.AddPoints(this.Worth);
                     }
                     _markDelete = value;
                 }
@@ -99,7 +99,7 @@ namespace Textie.Games.SpaceInvaders
         public void FireAtWill(TrajectoryController bulletController, ICollisionController collisionController, int offsetY)
         {
 
-            var bullet = new Bullet(GameData, 1, Primitives.Direction.Up, Textie.Properties.Resources.SIAB)
+            var bullet = new Bullet(GameData, Scene, 1, Primitives.Direction.Up, Textie.Properties.Resources.SIAB)
             {
                 EdgeOfScreenCondition = EdgeScreenHandling.Disappear,
                 LayerOrder = int.MaxValue,
@@ -114,7 +114,7 @@ namespace Textie.Games.SpaceInvaders
             bullet.Bounds.Position.X = this.Bounds.Position.X + 3;
             bullet.Bounds.Position.Y = offsetY + this.Bounds.Position.Y + 3;// move the missile down by one since the game will move it up on the first iteration of drawing
             bullet.Fire();
-            GameData.Scene.AddSprite(bullet);
+            Scene.AddSprite(bullet);
         }
 
         #region ICollider members

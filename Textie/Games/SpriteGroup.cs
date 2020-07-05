@@ -10,7 +10,7 @@ namespace Textie.Games
     public class SpriteGroup<T> : Sprite, IList<T>, ISpriteGroup
         where T : Sprite
     {
-        public SpriteGroup(GameData gameData) : base(gameData, 0, 0)
+        public SpriteGroup(GameData gameData, Scene scene) : base(gameData, scene, 0, 0)
         {
             _sprites = new List<T>();
         }

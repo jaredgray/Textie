@@ -8,8 +8,8 @@ namespace Textie.Games.SpaceInvaders
     public class Player : Sprite, ICollider
     {
         const string data = @"COME ON!!!!!";
-        public Player(GameData gameData, int width, int height)
-            : base(gameData, width, height)
+        public Player(GameData gameData, Scene scene, int width, int height)
+            : base(gameData, scene, width, height)
         {
             base.SetData(data);
             CollisionBehavior = CollisionBehavior.RunDestroySequence;
@@ -26,7 +26,7 @@ namespace Textie.Games.SpaceInvaders
         {
             // we don't actually want to delete the player
             DeathPlayer.Play();
-            GameData.Playerboard.RemoveLife();
+            Scene.Playerboard.RemoveLife();
             GameData.PlayerDeath = true;
         }
         // disable the collided property because the player continues until the game detects that the player had died
