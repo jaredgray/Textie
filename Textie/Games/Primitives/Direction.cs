@@ -7,6 +7,7 @@ namespace Textie.Games.Primitives
 {
     public enum Direction
     {
+        None,
         Up,
         Down,
         Left,

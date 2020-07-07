@@ -5,7 +5,7 @@ using Textie.Games.Shooter;
 
 namespace Textie.Games.SpaceInvaders
 {
-    public class Alien : Sprite, ITrajectory, ICollider
+    public class Alien : Sprite, ITrajectory, ICollider, IShooter
     {
         const string data = @"COME ON!!!!!";
         public Alien(GameData gameData, Scene scene, int frequency, Direction direction, Size size, int worth)
@@ -96,8 +96,11 @@ namespace Textie.Games.SpaceInvaders
             return ' ';
         }
 
-        public void FireAtWill(TrajectoryController bulletController, ICollisionController collisionController, int offsetY)
+        public void FireAtWill(TrajectoryController bulletController, ICollisionController collisionController)
         {
+            var positionabsolute = this.Bounds.Position + this.Bounds.OffsetPosition;
+            positionabsolute.X += 3;
+            positionabsolute.Y += 3;
 
             var bullet = new Bullet(GameData, Scene, 1, Primitives.Direction.Up, Textie.Properties.Resources.SIAB)
             {
@@ -105,14 +108,14 @@ namespace Textie.Games.SpaceInvaders
                 LayerOrder = int.MaxValue,
                 TrajectoryController = bulletController,
                 CollisionController = collisionController,
+                Frequency = 2,
                 Direction = Direction.Down,
                 Type = SpriteTypes.ALIEN_BULLET,
                 CollidesWithTypes = new List<string>() { SpriteTypes.PLAYER, SpriteTypes.PLAYER_BULLET }
             };
             bullet.SetData("!");
-            bullet.RendererData.StepY = 2;
-            bullet.Bounds.Position.X = this.Bounds.Position.X + 3;
-            bullet.Bounds.Position.Y = offsetY + this.Bounds.Position.Y + 3;// move the missile down by one since the game will move it up on the first iteration of drawing
+            bullet.RendererData.StepY = 1;
+            bullet.Bounds.Position = positionabsolute;
             bullet.Fire();
             Scene.AddSprite(bullet);
         }
@@ -124,6 +127,11 @@ namespace Textie.Games.SpaceInvaders
             this.MarkDelete = true;
             DeathPlayer.Play();
         }
+
+        public void OnCollision(Sprite other)
+        {
+        }
+
         public bool HasCollided { get; set; }
         public CollisionBehavior CollisionBehavior { get; set; }
         public IEnumerable<string> CollidesWithTypes { get; set; }

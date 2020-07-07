@@ -8,7 +8,7 @@ namespace Kbg.NppPluginNET.PluginInfrastructure
 	public interface INotepadPPGateway
 	{
 		void FileNew();
-
+		void CloseCurrent();
 		string GetCurrentFilePath();
 		unsafe string GetFilePath(int bufferId);
 		void SetCurrentLanguage(LangType language);
@@ -25,6 +25,22 @@ namespace Kbg.NppPluginNET.PluginInfrastructure
 		public void FileNew()
 		{
 			Win32.SendMessage(PluginBase.nppData._nppHandle, (uint) NppMsg.NPPM_MENUCOMMAND, Unused, NppMenuCmd.IDM_FILE_NEW);
+		}
+		const uint WM_COMMAND = 0x0111;
+		public void CloseCurrent()
+		{
+			Win32.SendMessage(PluginBase.nppData._nppHandle, (uint)NppMsg.NPPM_MENUCOMMAND, Unused, NppMenuCmd.IDM_FILE_CLOSE);
+			//NppMenuCmd.IDM_FILE_CLOSE
+			/*
+				Message: WDN_NOTIFY
+					LParam: NMWINDLG
+								->type = WDT_CLOSE = 3
+
+			Go to Plugins -> NppExec -> Execute...
+			Paste the following snippet into the textbox:
+			NPP_SENDMSG WM_COMMAND IDM_FILE_CLOSE
+			*/
+
 		}
 
 		/// <summary>

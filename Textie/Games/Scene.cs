@@ -3,17 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms.VisualStyles;
 using Textie.Games.Primitives;
 
 namespace Textie.Games
 {
-    public class Scene
+    public abstract class Scene
     {
         public static bool DO_LOG = false;
 
-        public Scene(IScintillaGateway editor, Logger logger, Size size, GameData gameData)
+        public Scene(IRenderer renderer, Logger logger, Size size, GameData gameData)
         {
-            Editor = editor;
+            Renderer = renderer;
             Logger = logger;
             GameData = gameData;
             Sprites = new List<Sprite>();
@@ -27,18 +28,18 @@ namespace Textie.Games
 
         public Playerboard Playerboard { get; private set; }
 
+        public IRenderer Renderer { get; set; }
+
         #endregion
 
         #region private variables
 
-        private List<char> Data { get; set; }
+        private List<byte> Data { get; set; }
         private List<Sprite> Sprites { get; set; }
 
         #endregion
 
         #region protected variables 
-
-        protected IScintillaGateway Editor { get; set; }
 
         protected Logger Logger { get; set; }
 
@@ -53,26 +54,27 @@ namespace Textie.Games
 
         }
 
-        public void Draw()
+        public virtual void Draw()
         {
             ClearData();
             DrawSprites();
-            Editor.ClearAll();
-            StringBuilder linebuilder = new StringBuilder();
-            for (int y = 0; y < Size.Height; y++)
-            {
-                for (int x = 0; x < Size.Width; x++)
-                {
-                    linebuilder.Append(Data[(y * Size.Width) + x]);
-                }
-                linebuilder.AppendLine();
-            }
-            AddTextToEditor(linebuilder.ToString());
+            this.Renderer.PreRenderFrame();
+            this.Renderer.RenderFrame(Data);
         }
 
-        public bool HasSprite(Func<Sprite, bool> evalueater)
+        public void ClearSprites()
         {
-            return Sprites.Any(x => evalueater(x));
+            this.Sprites.Clear();
+        }
+
+        public bool HasSprite(Func<Sprite, bool> evaluator)
+        {
+            return Sprites.Any(x => evaluator(x));
+        }
+
+        public IEnumerable<Sprite> QuerySprites(Func<Sprite, bool> evaluator)
+        {
+            return Sprites.Where(x => evaluator(x));
         }
 
         public void AddSprite(Sprite sprite)
@@ -80,9 +82,29 @@ namespace Textie.Games
             this.Sprites.Add(sprite);
         }
 
+        public void AddSprites(IEnumerable<Sprite> sprites)
+        {
+            foreach (var sprite in sprites)
+            {
+                this.Sprites.Add(sprite);
+            }
+        }
+
         public void RemoveSprite(Sprite sprite)
         {
             this.Sprites.Remove(sprite);
+        }
+
+        public void RemoveSprites(IEnumerable<Sprite> sprites)
+        {
+            if(sprites.Any())
+            {
+                for (int i = sprites.Count() - 1; i > 0; i--)
+                {
+                    var victim = sprites.ElementAt(i);
+                    RemoveSprite(victim);
+                }
+            }
         }
 
         public void SetPlayerboard(Playerboard board)
@@ -94,6 +116,12 @@ namespace Textie.Games
 
             Playerboard = board;
             AddSprite(Playerboard);
+        }
+
+        public virtual void OnStartScene(Scene lastScene) { }
+        public virtual void OnEndScene() 
+        {
+            this.ClearSprites();
         }
 
         #endregion
@@ -120,10 +148,10 @@ namespace Textie.Games
 
         private void InitializeData()
         {
-            Data = new List<char>(Size.Width * Size.Height);
+            Data = new List<byte>(Size.Width * Size.Height);
             for (int i = 0; i < (Size.Width * Size.Height); i++)
             {
-                Data.Add(' ');
+                Data.Add((byte)' ');
             }
         }
 
@@ -131,7 +159,7 @@ namespace Textie.Games
         {
             for (int i = 0; i < (Size.Width * Size.Height); i++)
             {
-                Data[i] = ' ';
+                Data[i] = (byte)' ';
             }
         }
 
@@ -181,26 +209,13 @@ namespace Textie.Games
                         var c = sprite.GetCharAt((y * sprite.Bounds.Size.Width) + x);
                         var ypos = (y * Size.Width) + (sprite.Bounds.Position.Y * Size.Width);
                         var xpos = x + sprite.Bounds.Position.X;
-                        Data[ypos + xpos] = c;
+                        Data[ypos + xpos] = (byte)c;
                     }
                 }
             }
 
             Sprites.RemoveAll(x => x.MarkDelete);
 
-        }
-
-        private void AddTextToEditor(string text)
-        {
-            Editor.AddText(text.Length, text);
-            Editor.NewLine();
-            if (DO_LOG)
-            {
-                if (null != Logger)
-                {
-                    Logger.WriteLine(text);
-                }
-            }
         }
 
         #endregion

@@ -15,7 +15,11 @@ namespace Textie.Games
         public CollisionBehavior CollisionBehavior { get; set; }
         public IEnumerable<string> CollidesWithTypes { get; set; }
 
-        public void RunDestroySequence()
+        public virtual void OnCollision(Sprite other)
+        {
+        }
+
+        public virtual void RunDestroySequence()
         {
 
         }

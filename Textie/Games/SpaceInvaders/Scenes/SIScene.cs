@@ -9,7 +9,7 @@ namespace Textie.Games.SpaceInvaders.Scenes
 {
     public class SIScene : Scene
     {
-        public SIScene(IScintillaGateway editor, Logger logger, Size size, GameData gameData) : base(editor, logger, size, gameData)
+        public SIScene(IRenderer renderer, Logger logger, Size size, GameData gameData) : base(renderer, logger, size, gameData)
         {
             
         }

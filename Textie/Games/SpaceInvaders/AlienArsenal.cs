@@ -19,6 +19,7 @@ namespace Textie.Games.SpaceInvaders
         private TrajectoryController BulletController { get; set; }
         private List<AlienGroup> AlienGroups { get; set; }
         private DateTime NextFiring { get; set; }
+        public bool IsStopped { get; set; }
 
 
         private void ResetNextFiring()
@@ -46,9 +47,16 @@ namespace Textie.Games.SpaceInvaders
             this.AlienGroups = new List<AlienGroup>();
         }
         
+        public void Stop()
+        {
+            IsStopped = true;
+        }
 
         private void FireAtRandom()
         {
+            if (IsStopped)
+                return;
+
             this.AlienGroups.RemoveAll(x => x.MarkDelete);
             Random rnd = new Random(DateTime.Now.Millisecond);
 
@@ -84,7 +92,7 @@ namespace Textie.Games.SpaceInvaders
 
             var index = rnd.Next(0, candidates.Count - 1);
             var shooter = candidates.ElementAt(index);
-            shooter.Value.Item2.FireAtWill(BulletController, base.CollisionController, shooter.Value.Item1.Bounds.Position.Y);
+            shooter.Value.Item2.FireAtWill(BulletController, base.CollisionController);
 
             ResetNextFiring();
         }

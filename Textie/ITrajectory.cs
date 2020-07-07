@@ -11,7 +11,8 @@ namespace Textie
     public enum EdgeScreenHandling
     {
         Disappear,
-        ReverseDirection
+        ReverseDirection,
+        Stop
     }
     public interface ITrajectory
     {

@@ -1,5 +1,6 @@
 ﻿using Kbg.NppPluginNET.PluginInfrastructure;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Textie.Games.Audio;
 using Textie.Games.Primitives;
@@ -10,18 +11,15 @@ namespace Textie.Games.SpaceInvaders
 {
     public class PlayGameScene : SIScene
     {
-        public PlayGameScene(IScintillaGateway editor, Logger logger, Size size, GameData gameData) : base(editor, logger, size, gameData)
+        public PlayGameScene(IRenderer renderer, Logger logger, Size size, GameData gameData) : base(renderer, logger, size, gameData)
         {
         }
 
 
         public AudioLoop MainAudioPlayer { get; set; }
 
-        //        readonly string PlayerData = @"      /\      
-        //     /~~\     
-        // ^  /~~~~\  ^ 
-        //|------------|
-        //|------------|";
+        public bool IsGameOver { get; set; }
+
         readonly string PlayerData = @"    /\    
  ^ /~~\ ^ 
 |--------|
@@ -40,26 +38,21 @@ namespace Textie.Games.SpaceInvaders
  /~~\ "; // 2 rows
         public Player Player { get; set; }
 
-        //public SpriteGroup Alien30 { get; set; }
-        //public SpriteGroup Alien20 { get; set; }
-        //public SpriteGroup Alien10 { get; set; }
 
-        private TrajectoryController BulletController { get; set; }
+        private TrajectoryController TrajectoryController { get; set; }
         private TrajectoryController AlienController { get; set; }
         private AlienArsenal AlienArsenal { get; set; }
         public CollisionController CollisionController { get; set; }
-        public AlienGroupCollisionController AlienGroupCollisionController { get; set; }
-
-        private Bullet CurrentBullet { get; set; }
 
         public override void InitializeScene()
         {
+            IsGameOver = false;
+            ClearSprites();
             Logger.WriteLine($"Initializing AsciiShooter...");
-            BulletController = new TrajectoryController(Size, Logger);
+            TrajectoryController = new TrajectoryController(Size, Logger);
             AlienController = new AlienTrajectoryController(Size, Logger);
             CollisionController = new CollisionController();
-            AlienGroupCollisionController = new AlienGroupCollisionController();
-            AlienArsenal = new AlienArsenal(GameData, this, BulletController, CollisionController);
+            AlienArsenal = new AlienArsenal(GameData, this, TrajectoryController, CollisionController);
             SetPlayerboard(new Playerboard("/\\", 3));
             SetupAudio();
             BuildCharacters();
@@ -96,16 +89,18 @@ namespace Textie.Games.SpaceInvaders
             Player = new Player(GameData, this, 10, 4)
             {
                 LayerOrder = 0,
-                Type = SpriteTypes.PLAYER
+                Type = SpriteTypes.PLAYER,
+                TrajectoryController = TrajectoryController
             };
             Player.SetData(PlayerData);
             Player.Bounds.Position.X = 45;
             Player.Bounds.Position.Y = 36;
-            Player.RendererData.StepX = 2;
+            Player.RendererData.StepX = 1;
             Player.RendererData.StepY = 0;
             AddSprite(Player);
             AddSprite(AlienArsenal);
             BuildAlienGroups();
+            BuildBunkers();
         }
 
         private void BuildAlienGroups()
@@ -117,6 +112,22 @@ namespace Textie.Games.SpaceInvaders
             BuildAlienGroup(12, AlienData10A, AlienData10B, 10);
             BuildAlienGroup(15, AlienData10A, AlienData10B, 10);
 
+        }
+
+        private void BuildBunkers()
+        {
+            int xpos = 15;
+            for (int i = 0; i < 4; i++)
+            {
+                var bunker = new Bunker(GameData, this, 7, 3)
+                {
+                    CollisionController = CollisionController
+                };
+                bunker.Bounds.Position.X = xpos;
+                bunker.Bounds.Position.Y = 31;
+                AddSprite(bunker);
+                xpos += 30;
+            }
         }
 
         private void BuildAlienGroup(int y, string dataA, string dataB, int worth)
@@ -131,7 +142,7 @@ namespace Textie.Games.SpaceInvaders
                 CollisionController = CollisionController // AlienGroupCollisionController
             };
             group.Bounds.Position.Y = y;
-            group.RendererData.StepX = 4;
+            group.RendererData.StepX = 1;
             for (int i = 0; i < 11; i++)
             {
                 BuildAlien(group, dataA, dataB, 8 * i + 5, 0, worth);
@@ -162,34 +173,47 @@ namespace Textie.Games.SpaceInvaders
         public override void Update()
         {
             base.Update();
-
-            if (GameData.StopGame)
+            if (!IsGameOver)
             {
-                if (Playerboard.HasLife())
+                if (GameData.StopGame)
                 {
                     MainAudioPlayer.Pause();
-                    Thread.Sleep(1000);
-                    MainAudioPlayer.Play();
-                    GameData.StopGame = false;
+                    if (Playerboard.HasLife())
+                    {
+                        // Player lost a life but has another
+                        Thread.Sleep(1000);
+                        MainAudioPlayer.Play();
+                        GameData.StopGame = false;
+                    }
+                    else
+                    {
+                        // Player is dead, we can move on now
+                        var sprites = QuerySprites(x => x is Bullet || x is AlienGroup || x is AlienArsenal);
+                        base.RemoveSprites(sprites);
+                        AlienArsenal.Stop();
+                        AlienArsenal = null;
+                        IsGameOver = true;
+                        EndScene();
+                        return;
+                    }
                 }
-                else
+                var gameData = GameData as SIGameData;
+                if (gameData.PlayerDeath)
                 {
-                    EndScene();
-
-                    return;
+                    GameData.StopGame = true;
+                    gameData.PlayerDeath = false;
+                    var bullets = QuerySprites(x => x is Bullet);
+                    bullets.All(x => x.MarkDelete = true);
+                    RemoveSprites(bullets);
                 }
-            }
-            if (GameData.PlayerDeath)
-            {
-                GameData.StopGame = true;
-                GameData.PlayerDeath = false;
-            }
 
-            if (!HasSprite(x => x is AlienGroup))
-            {
-                Thread.Sleep(2000);
-                AlienArsenal.Clear();
-                BuildAlienGroups();
+                if (!HasSprite(x => x is AlienGroup))
+                {
+                    Thread.Sleep(2000);
+                    AlienArsenal.Clear();
+                    BuildAlienGroups();
+                }
+
             }
         }
 
@@ -204,63 +228,48 @@ namespace Textie.Games.SpaceInvaders
             GameData.IsActive = false;
         }
 
+        public override void OnEndScene()
+        {
+            base.OnEndScene();
+            
+        }
+
+        public override void Draw()
+        {
+            base.Draw();
+            Player.Direction = Direction.None;
+        }
 
         #region Key Events
 
         public override void OnDownKeyDown()
         {
-            Player.Bounds.Position.Y += Player.RendererData.StepY;
-            if (Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_LEFT))
-            {
-            }
-            if (Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_RIGHT))
-            {
-            }
-            if (Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_UP))
-            {
-            }
-            if (Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_DOWN))
-            {
-            }
-            if (Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_SPACE))
-            {
-            }
+            if (!IsGameOver)
+                Player.FireAtWill(TrajectoryController, CollisionController);
         }
 
         public override void OnLeftKeyDown()
         {
-            Player.Bounds.Position.X -= Player.RendererData.StepX;
+            if (!IsGameOver)
+                Player.Direction = Direction.Left;
         }
 
         public override void OnRightKeyDown()
         {
-            Player.Bounds.Position.X += Player.RendererData.StepX;
+            if (!IsGameOver)
+                Player.Direction = Direction.Right;
         }
 
         public override void OnUpKeyDown()
         {
-            Player.Bounds.Position.Y -= Player.RendererData.StepY;
+            if (!IsGameOver)
+                Player.Direction = Direction.Up;
         }
 
         public override void OnSpaceKeyDown()
         {
-            if((null == CurrentBullet || CurrentBullet.MarkDelete))
-            {
-                CurrentBullet = new Bullet(GameData, this, 1, Primitives.Direction.Up, Textie.Properties.Resources.SIPB)
-                {
-                    EdgeOfScreenCondition = EdgeScreenHandling.Disappear,
-                    LayerOrder = int.MaxValue,
-                    TrajectoryController = BulletController,
-                    CollisionController = CollisionController,
-                    Type = SpriteTypes.PLAYER_BULLET,
-                    CollidesWithTypes = new List<string>() { SpriteTypes.ALIEN, SpriteTypes.ALIEN_BULLET }
-                };
-                CurrentBullet.RendererData.StepY = 2;
-                CurrentBullet.Bounds.Position.X = Player.Bounds.Position.X + 4;
-                CurrentBullet.Bounds.Position.Y = Player.Bounds.Position.Y - 1;// move the missile down by one since the game will move it up on the first iteration of drawing
-                CurrentBullet.Fire();
-                AddSprite(CurrentBullet);
-            }
+            if (!IsGameOver)
+                Player.FireAtWill(TrajectoryController, CollisionController);
         }
 
         #endregion

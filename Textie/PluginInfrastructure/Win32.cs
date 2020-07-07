@@ -317,7 +317,7 @@ namespace Kbg.NppPluginNET.PluginInfrastructure
         //[return: MarshalAs(UnmanagedType.Bool)]
         //static extern bool GetKeyboardState(byte[] lpKeyState);
 
-        public class Keyboard
+        public class Win32Keyboard
         {
             [DllImport("user32.dll")]
             static extern short GetKeyState(VirtualKeyStates nVirtKey);
@@ -586,6 +586,10 @@ namespace Kbg.NppPluginNET.PluginInfrastructure
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern IntPtr GetModuleHandle(string lpModuleName);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetKeyboardState(byte[] lpKeyState);
 
         #endregion
     }

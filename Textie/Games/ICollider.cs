@@ -9,7 +9,8 @@ namespace Textie.Games
     {
         None,
         Remove,
-        RunDestroySequence
+        RunDestroySequence,
+        Custom
     }
     public interface ICollider
     {
@@ -17,5 +18,6 @@ namespace Textie.Games
         CollisionBehavior CollisionBehavior { get; set; }
         void RunDestroySequence();
         IEnumerable<string> CollidesWithTypes { get; set; }
+        void OnCollision(Sprite other);
     }
 }

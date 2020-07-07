@@ -13,22 +13,57 @@ using Textie.TextieInfrastructure;
 
 namespace Textie.Games.Shooter
 {
-    public class SpaceInvaders : Game<SIScene>
+    public class SpaceInvaders : Game<SIScene, SIGameData>
     {
-        public SpaceInvaders(INotepadPPGateway npp, IScintillaGateway editor)
-            : base(npp, editor)
+        public SpaceInvaders(IRenderer renderer)
+            : base(renderer)
         {
+            Scenes = new List<SIScene>();
         }
+
+        List<SIScene> Scenes { get; set; }
+        int NextSceneIndex { get; set; }
 
         protected override void ChangeScene()
         {
-            Scene = new PlayGameScene(Editor, Logger, GameSize, GameData);
+            if (NextSceneIndex >= Scenes.Count)
+                NextSceneIndex = 0;
+            var currentScene = Scene;
+            var nextScene = Scenes[NextSceneIndex];
+            nextScene.InitializeScene();
+            nextScene.OnStartScene(currentScene);
+            if (null != currentScene)
+            {
+                currentScene.OnEndScene();
+            }
+
+
+            Scene = nextScene;
+
+            ++NextSceneIndex;
+            Scene.SceneComplete += Scene_SceneComplete;
             Scene.InitializeScene();
+        }
+
+        private void Scene_SceneComplete(object sender, EventArgs e)
+        {
+            Scene.SceneComplete -= Scene_SceneComplete;
+            ChangeScene();
+            // change the current scene
         }
 
         protected override void InitializeInternal()
         {
-
+            GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_LEFT);
+            GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_UP);
+            GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_RIGHT);
+            GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_DOWN);
+            GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_SPACE);
+            GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_RETURN);
+            GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_ESCAPE);
+            Scenes.Add(new NewGameScene(Renderer, Logger, GameSize, GameData));
+            Scenes.Add(new PlayGameScene(Renderer, Logger, GameSize, GameData));
+            Scenes.Add(new GameOverScene(Renderer, Logger, GameSize, GameData));
         }
 
         protected override void StartGameLoop()
@@ -43,7 +78,7 @@ namespace Textie.Games.Shooter
 
         protected override void Update()
         {
-            
+
             /*
              
             yeah, this sucks..unfortunately couldn't find a way to listen to key events.
@@ -61,27 +96,34 @@ namespace Textie.Games.Shooter
             so here we are.
                 
              */
-            if (Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_LEFT))
+            if (GameData.Keyboard.IsKeyDown(Win32.Win32Keyboard.VirtualKeyStates.VK_LEFT))
             {
                 Scene?.OnLeftKeyDown();
             }
-            if (Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_RIGHT))
+            if (GameData.Keyboard.IsKeyDown(Win32.Win32Keyboard.VirtualKeyStates.VK_RIGHT))
             {
                 Scene?.OnRightKeyDown();
             }
-            if (Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_UP))
+            if (GameData.Keyboard.IsKeyDown(Win32.Win32Keyboard.VirtualKeyStates.VK_UP))
             {
                 Scene?.OnUpKeyDown();
             }
-            if (Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_DOWN))
+            if (GameData.Keyboard.IsKeyDown(Win32.Win32Keyboard.VirtualKeyStates.VK_DOWN))
             {
                 Scene?.OnDownKeyDown();
             }
-            if (Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_SPACE))
+            if (GameData.Keyboard.IsKeyDown(Win32.Win32Keyboard.VirtualKeyStates.VK_SPACE))
             {
                 Scene?.OnSpaceKeyDown();
             }
         }
 
+        protected override void CreateGameData()
+        {
+            GameData = new SIGameData
+            {
+
+            };
+        }
     }
 }

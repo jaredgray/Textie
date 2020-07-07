@@ -59,6 +59,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Games\IRenderer.cs" />
+    <Compile Include="Games\IShooter.cs" />
+    <Compile Include="Games\Keyboard.cs" />
+    <Compile Include="Games\LeaderboardScene.cs" />
+    <Compile Include="Games\NppRenderer.cs" />
     <Compile Include="Games\SpaceInvaders\Audio\AudioLoop.cs" />
     <Compile Include="Games\SpaceInvaders\Audio\AudioTrack.cs" />
     <Compile Include="Games\SpaceInvaders\Audio\AudioTrackPlayer.cs" />
@@ -81,15 +86,17 @@
     <Compile Include="Games\Playerboard.cs" />
     <Compile Include="Games\SpaceInvaders\AlienGroup.cs" />
     <Compile Include="Games\SpaceInvaders\Alien.cs" />
-    <Compile Include="Games\SpaceInvaders\AlienGroupCollisionController.cs" />
     <Compile Include="Games\SpaceInvaders\AlienArsenal.cs" />
     <Compile Include="Games\SpaceInvaders\AlienTrajectoryController.cs" />
     <Compile Include="Games\SpaceInvaders\Bullet.cs" />
-    <Compile Include="Games\SpaceInvaders\Scenes\LeaderboardScene.cs" />
+    <Compile Include="Games\SpaceInvaders\Bunker.cs" />
+    <Compile Include="Games\SpaceInvaders\Scenes\GameOverScene.cs" />
     <Compile Include="Games\SpaceInvaders\Scenes\NewGameScene.cs" />
     <Compile Include="Games\SpaceInvaders\Player.cs" />
     <Compile Include="Games\SpaceInvaders\Scenes\PlayGameScene.cs" />
+    <Compile Include="Games\SpaceInvaders\Scenes\SILeaderboardScene.cs" />
     <Compile Include="Games\SpaceInvaders\Scenes\SIScene.cs" />
+    <Compile Include="Games\SpaceInvaders\SIGameData.cs" />
     <Compile Include="Games\SpaceInvaders\SpaceInvaders.cs" />
     <Compile Include="Games\SpaceInvaders\SpriteTypes.cs" />
     <Compile Include="Games\Sprite.cs" />
@@ -108,6 +115,8 @@
     <Compile Include="Forms\frmMyDlg.Designer.cs">
       <DependentUpon>frmMyDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="Games\InputProcessor.cs" />
+    <Compile Include="PluginInfrastructure\Textbox.cs" />
     <Compile Include="PluginInfrastructure\Win32.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="PluginInfrastructure\GatewayDomain.cs" />

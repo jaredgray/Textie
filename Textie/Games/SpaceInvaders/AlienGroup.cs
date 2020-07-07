@@ -62,6 +62,8 @@ namespace Textie.Games.SpaceInvaders
             throw new NotImplementedException("An AlienGroup cannot run a DestroySequence");
         }
 
-
+        public void OnCollision(Sprite other)
+        {
+        }
     }
 }

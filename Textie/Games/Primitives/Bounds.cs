@@ -10,9 +10,15 @@ namespace Textie.Games.Primitives
         public Bounds()
         {
             Position = new Vector2D();
+            OffsetPosition = new Vector2D();
             Size = new Size();
         }
         public Vector2D Position { get; set; }
+        public Vector2D OffsetPosition { get; set; }
+        public Vector2D GetAbsolutePosition()
+        {
+            return Position + OffsetPosition;
+        }
         public Size Size 
         {
             get { return _size; }

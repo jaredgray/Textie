@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kbg.NppPluginNET.PluginInfrastructure;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -39,6 +40,7 @@ namespace Textie.Games
         public virtual bool MarkDelete { get; set; }
 
         public virtual Bounds Bounds { get; private set; }
+
 
         public int LayerOrder { get; set; }
 
@@ -84,6 +86,11 @@ namespace Textie.Games
 
             }
             return ' ';
+        }
+
+        public virtual void SetCharAt(int index, char value)
+        {
+            Data[index] = value;
         }
 
         public virtual void Update() { }

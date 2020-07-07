@@ -5,7 +5,8 @@ using System.Text;
 
 namespace Textie.Games.SpaceInvaders
 {
-    class LeaderboardScene
+    public class SIGameData : GameData
     {
+        public bool PlayerDeath { get; set; }
     }
 }

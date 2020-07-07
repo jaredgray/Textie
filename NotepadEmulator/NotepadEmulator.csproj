@@ -65,10 +65,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleRenderer.cs" />
     <Compile Include="NotepadGateway.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScantiliaGateway.cs" />
+    <Compile Include="Win32Console.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

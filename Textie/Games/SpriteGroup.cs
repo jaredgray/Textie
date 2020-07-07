@@ -13,6 +13,7 @@ namespace Textie.Games
         public SpriteGroup(GameData gameData, Scene scene) : base(gameData, scene, 0, 0)
         {
             _sprites = new List<T>();
+           
         }
 
         public override void Update()
@@ -67,6 +68,11 @@ namespace Textie.Games
 
         #region IList implementation
 
+        private void InitializeSprite(Sprite s)
+        {
+            s.Bounds.OffsetPosition = this.Bounds.Position;
+        }
+
         public int Count => _sprites.Count;
 
         public bool IsReadOnly => false;
@@ -80,6 +86,7 @@ namespace Textie.Games
             set
             {
                 _sprites[index] = value;
+                InitializeSprite(value);
                 RebuildData();
             }
         }
@@ -92,6 +99,7 @@ namespace Textie.Games
         public void Insert(int index, T item)
         {
             _sprites.Insert(index, item);
+            InitializeSprite(item);
             RebuildData();
         }
 
@@ -104,6 +112,7 @@ namespace Textie.Games
         public void Add(T item)
         {
             _sprites.Add(item);
+            InitializeSprite(item);
             RebuildData();
         }
 

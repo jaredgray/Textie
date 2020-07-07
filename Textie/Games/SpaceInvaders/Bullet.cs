@@ -41,8 +41,13 @@ namespace Textie.Games.Shooter
 
         public void RunDestroySequence()
         {
-
+            throw new NotImplementedException("A Bullet cannot run a DestroySequence");
         }
+
+        public void OnCollision(Sprite other)
+        {
+        }
+
         public bool HasCollided { get; set; }
         public CollisionBehavior CollisionBehavior { get; set; }
         public IEnumerable<string> CollidesWithTypes { get; set; }

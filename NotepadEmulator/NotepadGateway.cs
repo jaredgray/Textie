@@ -9,6 +9,10 @@ namespace NotepadEmulator
 {
     public class NotepadGateway : INotepadPPGateway
     {
+        public void CloseCurrent()
+        {
+        }
+
         public void FileNew()
         {
 

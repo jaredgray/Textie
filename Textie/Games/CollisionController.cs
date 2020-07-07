@@ -32,23 +32,39 @@ namespace Textie.Games
                         return;
 
                     spriteCollider.HasCollided = candidateCollider.HasCollided = true;
-                    if(spriteCollider.CollisionBehavior == CollisionBehavior.Remove)
-                    {
-                        collided.MarkDelete = true;
-                    }
-                    else if(spriteCollider.CollisionBehavior == CollisionBehavior.RunDestroySequence)
-                    {
-                        spriteCollider.RunDestroySequence();
-                    }
-
+                  
                     if (candidateCollider.CollisionBehavior == CollisionBehavior.Remove)
                     {
                         candidate.MarkDelete = true;
+                        candidateCollider.OnCollision(collided);
                     }
                     else if (candidateCollider.CollisionBehavior == CollisionBehavior.RunDestroySequence)
                     {
                         candidateCollider.RunDestroySequence();
+                        candidateCollider.OnCollision(collided);
                     }
+                    else if (spriteCollider.CollisionBehavior == CollisionBehavior.Custom)
+                    {
+                        candidateCollider.OnCollision(collided);
+                    }
+
+                    if (spriteCollider.CollisionBehavior == CollisionBehavior.Remove)
+                    {
+                        collided.MarkDelete = true;
+                        spriteCollider.OnCollision(candidate);
+                    }
+                    else if(spriteCollider.CollisionBehavior == CollisionBehavior.RunDestroySequence)
+                    {
+                        spriteCollider.RunDestroySequence();
+                        spriteCollider.OnCollision(candidate);
+                    }
+                    else if(spriteCollider.CollisionBehavior == CollisionBehavior.Custom)
+                    {
+                        spriteCollider.OnCollision(candidate);
+                    }
+
+                   
+                   
                     break;
                 }
             }
