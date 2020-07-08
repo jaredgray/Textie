@@ -68,7 +68,7 @@
     <Compile Include="Games\LeaderboardPlayer.cs" />
     <Compile Include="Games\Renderers\ConsoleRenderer.cs" />
     <Compile Include="Games\Scenes\LeaderboardScene.cs" />
-    <Compile Include="Games\NppRenderer.cs" />
+    <Compile Include="Games\Renderers\NppRenderer.cs" />
     <Compile Include="Games\PerformanceLogger.cs" />
     <Compile Include="Games\Services\ILeaderboardService.cs" />
     <Compile Include="Games\Services\LeaderboardService.cs" />
@@ -114,7 +114,7 @@
     <Compile Include="Games\Primitives\Vector2D.cs" />
     <Compile Include="Games\TrajectoryController.cs" />
     <Compile Include="Games\TrajectoryRendererData.cs" />
-    <Compile Include="ITrajectory.cs" />
+    <Compile Include="Games\ITrajectory.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="PluginInfrastructure\ClikeStringArray.cs" />
     <Compile Include="PluginInfrastructure\DllExport\DllExportAttribute.cs" />

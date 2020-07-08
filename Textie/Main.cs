@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Kbg.NppPluginNET.PluginInfrastructure;
 using Textie;
 using Textie.Games;
+using Textie.Games.Renderers;
 using Textie.Games.Services;
 using Textie.Games.Shooter;
 

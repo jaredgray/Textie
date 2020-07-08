@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Permissions;
-using System.Text;
-using Textie.Games;
-using Textie.Games.Primitives;
+﻿using Textie.Games.Primitives;
 
-namespace Textie
+namespace Textie.Games
 {
     public enum EdgeScreenHandling
     {

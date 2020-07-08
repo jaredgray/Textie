@@ -1,11 +1,10 @@
 ﻿using Kbg.NppPluginNET.PluginInfrastructure;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Textie.Games.Primitives;
 
-namespace Textie.Games
+namespace Textie.Games.Renderers
 {
     public class NppRenderer : IRenderer
     {
