@@ -51,7 +51,8 @@ namespace Textie.Games.SpaceInvaders
         public override void Update()
         {
             base.Update();
-            if(CanUpdate && GameData.Keyboard.IsKeyDown(Win32.Win32Keyboard.VirtualKeyStates.VK_RETURN))
+            if (CanUpdate && GameData.Keyboard.IsKeyDown(Win32.Win32Keyboard.VirtualKeyStates.VK_RETURN))
+            //if (CanUpdate && GameData.Keyboard.IsKeyDown(ConsoleKey.Enter))
             {
                 EndScene();
             }

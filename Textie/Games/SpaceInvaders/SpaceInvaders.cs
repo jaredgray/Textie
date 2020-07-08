@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Textie.Games.Audio;
+using Textie.Games.Services;
 using Textie.Games.SpaceInvaders;
 using Textie.Games.SpaceInvaders.Scenes;
 using Textie.TextieInfrastructure;
@@ -15,14 +16,16 @@ namespace Textie.Games.Shooter
 {
     public class SpaceInvaders : Game<SIScene, SIGameData>
     {
-        public SpaceInvaders(IRenderer renderer)
-            : base(renderer)
+        public SpaceInvaders(IRenderer renderer, ILeaderboardService leaderboardService)
+            : base(renderer, leaderboardService)
         {
             Scenes = new List<SIScene>();
         }
 
         List<SIScene> Scenes { get; set; }
         int NextSceneIndex { get; set; }
+
+        public override string GameId => "Space Invaders";
 
         protected override void ChangeScene()
         {
@@ -54,13 +57,14 @@ namespace Textie.Games.Shooter
 
         protected override void InitializeInternal()
         {
-            GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_LEFT);
-            GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_UP);
-            GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_RIGHT);
-            GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_DOWN);
-            GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_SPACE);
-            GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_RETURN);
-            GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_ESCAPE);
+            //GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_LEFT);
+            //GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_UP);
+            //GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_RIGHT);
+            //GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_DOWN);
+            //GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_SPACE);
+            //GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_RETURN);
+            //GameData.Keyboard.ListenTo(Win32.Win32Keyboard.VirtualKeyStates.VK_ESCAPE);
+            GameData.Keyboard.ListenToAllKeys();
             Scenes.Add(new NewGameScene(Renderer, Logger, GameSize, GameData));
             Scenes.Add(new PlayGameScene(Renderer, Logger, GameSize, GameData));
             Scenes.Add(new GameOverScene(Renderer, Logger, GameSize, GameData));
@@ -94,7 +98,47 @@ namespace Textie.Games.Shooter
             enough input to play a game
 
             so here we are.
+            if (GameData.Keyboard.IsKeyDown(Win32.Win32Keyboard.VirtualKeyStates.VK_LEFT))
+            {
+                Scene?.OnLeftKeyDown();
+            }
+            if (GameData.Keyboard.IsKeyDown(Win32.Win32Keyboard.VirtualKeyStates.VK_RIGHT))
+            {
+                Scene?.OnRightKeyDown();
+            }
+            if (GameData.Keyboard.IsKeyDown(Win32.Win32Keyboard.VirtualKeyStates.VK_UP))
+            {
+                Scene?.OnUpKeyDown();
+            }
+            if (GameData.Keyboard.IsKeyDown(Win32.Win32Keyboard.VirtualKeyStates.VK_DOWN))
+            {
+                Scene?.OnDownKeyDown();
+            }
+            if (GameData.Keyboard.IsKeyDown(Win32.Win32Keyboard.VirtualKeyStates.VK_SPACE))
+            {
+                Scene?.OnSpaceKeyDown();
+            }
                 
+            if (GameData.Keyboard.IsKeyDown(ConsoleKey.LeftArrow))
+            {
+                Scene?.OnLeftKeyDown();
+            }
+            if (GameData.Keyboard.IsKeyDown(ConsoleKey.RightArrow))
+            {
+                Scene?.OnRightKeyDown();
+            }
+            if (GameData.Keyboard.IsKeyDown(ConsoleKey.UpArrow))
+            {
+                Scene?.OnUpKeyDown();
+            }
+            if (GameData.Keyboard.IsKeyDown(ConsoleKey.DownArrow))
+            {
+                Scene?.OnDownKeyDown();
+            }
+            if (GameData.Keyboard.IsKeyDown(ConsoleKey.Spacebar))
+            {
+                Scene?.OnSpaceKeyDown();
+            }
              */
             if (GameData.Keyboard.IsKeyDown(Win32.Win32Keyboard.VirtualKeyStates.VK_LEFT))
             {
@@ -118,11 +162,10 @@ namespace Textie.Games.Shooter
             }
         }
 
-        protected override void CreateGameData()
+        protected override void CreateGameData(ILeaderboardService leaderboardService)
         {
-            GameData = new SIGameData
+            GameData = new SIGameData(leaderboardService, GameId)
             {
-
             };
         }
     }

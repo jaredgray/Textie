@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Textie.Games.Primitives;
 
-namespace Textie.Games
+namespace Textie.Games.Scenes
 {
     public class LeaderboardScene : Scene
     {

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Input;
 using Textie.Games.Primitives;
-using Textie.PluginInfrastructure;
+using Textie.Games.Services;
 
 namespace Textie.Games
 {
@@ -24,7 +24,7 @@ namespace Textie.Games
 
         public TGameData GameData { get; set; }
         public TScene Scene { get; set; }
-
+     
 
         #region Game variables 
 
@@ -35,7 +35,7 @@ namespace Textie.Games
 
         #endregion
 
-        public Game(IRenderer renderer)
+        public Game(IRenderer renderer, ILeaderboardService leaderboardService)
         {
             Quit = false;
             Renderer = renderer;
@@ -46,6 +46,7 @@ namespace Textie.Games
                 Height = 40,
                 Width = 128
             };
+            CreateGameData(leaderboardService);
         }
 
         public void Initialize()
@@ -54,7 +55,7 @@ namespace Textie.Games
             {
                 Try(() =>
                 {
-                    CreateGameData();
+
                     IsInitialized = true;
                     GameData.IsAlive = GameData.IsActive = true;
                     Logger.StartLogging();
@@ -97,6 +98,7 @@ namespace Textie.Games
         {
             Try(() =>
             {
+                ++Textie.Games.GameData.FrameSequence;
                 GameData.Keyboard.Update();
                 Update();
                 Scene.Update();
@@ -108,10 +110,11 @@ namespace Textie.Games
 
         private void CheckForQuit()
         {
-            //if (Win32.Keyboard.IsKeyPressed(Win32.Keyboard.VirtualKeyStates.VK_ESCAPE))
-            //{
-            //    GameData.IsActive = GameData.IsAlive = false;
-            //}
+            if (GameData.Keyboard.IsKeyDown(Win32.Win32Keyboard.VirtualKeyStates.VK_ESCAPE))
+            //if (GameData.Keyboard.IsKeyDown(ConsoleKey.Escape))
+            {
+                GameData.IsActive = GameData.IsAlive = false;
+            }
         }
 
         private void CleanupGame()
@@ -129,7 +132,9 @@ namespace Textie.Games
         }
 
 
-        #region Abstract class methods 
+        #region Abstract interface
+        
+        public abstract string GameId { get; }
 
         protected abstract void InitializeInternal();
         protected abstract void StartGameLoop();
@@ -137,7 +142,7 @@ namespace Textie.Games
         protected abstract void ChangeScene();
         protected abstract void Update();
 
-        protected abstract void CreateGameData();
+        protected abstract void CreateGameData(ILeaderboardService leaderboardService);
 
         #endregion
 

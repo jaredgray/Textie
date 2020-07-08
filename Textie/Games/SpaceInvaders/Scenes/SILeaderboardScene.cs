@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Textie.Games.Primitives;
+using Textie.Games.Scenes;
 
 namespace Textie.Games.SpaceInvaders.Scenes
 {

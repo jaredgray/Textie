@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Textie;
 using Textie.Games;
-using static NotepadEmulator.Win32Console;
+using Textie.Games.Renderers;
 
 namespace NotepadEmulator
 {
@@ -27,8 +27,6 @@ namespace NotepadEmulator
             Logger.APPEND_LOG = false;
             var logger = new Logger(@"C:\Temp\ConsoleLogger.txt");
             logger.StartLogging();
-            var editor = new ScantiliaGateway();
-            var notepad = new NotepadGateway();
             var renderer = new ConsoleRenderer(logger);
             Kbg.NppPluginNET.Main.Main2(renderer);
             while (true)

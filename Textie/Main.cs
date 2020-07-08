@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Kbg.NppPluginNET.PluginInfrastructure;
 using Textie;
 using Textie.Games;
+using Textie.Games.Services;
 using Textie.Games.Shooter;
 
 namespace Kbg.NppPluginNET
@@ -46,7 +47,8 @@ namespace Kbg.NppPluginNET
         /// <param name="pNotepad"></param>
         public static void Main2(IRenderer renderer)
         {
-            var game = new SpaceInvaders(renderer);
+            var service = new LeaderboardService();
+            var game = new SpaceInvaders(renderer, service);
             spaceInvaderGames.Add(IntPtr.Zero, game);
             game.Initialize();
             game.Run();
@@ -188,7 +190,8 @@ namespace Kbg.NppPluginNET
         private static void PlaySpaceInvadersGame()
         {
             //notepad.FileNew();
-            var game = new SpaceInvaders(NppRenderer);
+            var service = new LeaderboardService();
+            var game = new SpaceInvaders(NppRenderer, service);
             game.Initialize();
             var windowId = editor.GetDocPointer();
             spaceInvaderGames.Add(windowId, game);
