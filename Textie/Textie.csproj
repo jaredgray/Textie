@@ -59,62 +59,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Games\Infrastructure\MachineInfo.cs" />
-    <Compile Include="Games\Infrastructure\Win32Console.cs" />
-    <Compile Include="Games\IRenderer.cs" />
-    <Compile Include="Games\IShooter.cs" />
-    <Compile Include="Games\Keyboard.cs" />
-    <Compile Include="Games\Leaderboard.cs" />
-    <Compile Include="Games\LeaderboardPlayer.cs" />
-    <Compile Include="Games\Renderers\ConsoleRenderer.cs" />
-    <Compile Include="Games\Scenes\LeaderboardScene.cs" />
-    <Compile Include="Games\Renderers\NppRenderer.cs" />
-    <Compile Include="Games\PerformanceLogger.cs" />
-    <Compile Include="Games\Services\ILeaderboardService.cs" />
-    <Compile Include="Games\Services\LeaderboardService.cs" />
-    <Compile Include="Games\Session.cs" />
-    <Compile Include="Games\SpaceInvaders\Audio\AudioLoop.cs" />
-    <Compile Include="Games\SpaceInvaders\Audio\AudioTrack.cs" />
-    <Compile Include="Games\SpaceInvaders\Audio\AudioTrackPlayer.cs" />
-    <Compile Include="Games\SpaceInvaders\Audio\IPlayAudio.cs" />
-    <Compile Include="Games\SpaceInvaders\Audio\IAudioTrack.cs" />
-    <Compile Include="Games\SpaceInvaders\Audio\DelayedAudioTrack.cs" />
-    <Compile Include="Games\SpaceInvaders\Audio\NAudioTrack.cs" />
-    <Compile Include="Games\CollidableSprite.cs" />
-    <Compile Include="Games\CollisionController.cs" />
-    <Compile Include="Games\Game.cs" />
-    <Compile Include="Games\GameData.cs" />
-    <Compile Include="Games\ICollider.cs" />
-    <Compile Include="Games\ICollisionController.cs" />
-    <Compile Include="Games\ISpriteGroup.cs" />
-    <Compile Include="Games\IUpdateSpriteHandler.cs" />
-    <Compile Include="Games\Primitives\Bounds.cs" />
-    <Compile Include="Games\Primitives\Direction.cs" />
-    <Compile Include="Games\Primitives\Size.cs" />
-    <Compile Include="Games\RendererData.cs" />
-    <Compile Include="Games\Playerboard.cs" />
-    <Compile Include="Games\SpaceInvaders\AlienGroup.cs" />
-    <Compile Include="Games\SpaceInvaders\Alien.cs" />
-    <Compile Include="Games\SpaceInvaders\AlienArsenal.cs" />
-    <Compile Include="Games\SpaceInvaders\AlienTrajectoryController.cs" />
-    <Compile Include="Games\SpaceInvaders\Bullet.cs" />
-    <Compile Include="Games\SpaceInvaders\Bunker.cs" />
-    <Compile Include="Games\SpaceInvaders\Scenes\GameOverScene.cs" />
-    <Compile Include="Games\SpaceInvaders\Scenes\NewGameScene.cs" />
-    <Compile Include="Games\SpaceInvaders\Player.cs" />
-    <Compile Include="Games\SpaceInvaders\Scenes\PlayGameScene.cs" />
-    <Compile Include="Games\SpaceInvaders\Scenes\SILeaderboardScene.cs" />
-    <Compile Include="Games\SpaceInvaders\Scenes\SIScene.cs" />
-    <Compile Include="Games\SpaceInvaders\SIGameData.cs" />
-    <Compile Include="Games\SpaceInvaders\SpaceInvaders.cs" />
-    <Compile Include="Games\SpaceInvaders\SpriteTypes.cs" />
-    <Compile Include="Games\Sprite.cs" />
-    <Compile Include="Games\SpriteGroup.cs" />
-    <Compile Include="Games\Scene.cs" />
-    <Compile Include="Games\Primitives\Vector2D.cs" />
-    <Compile Include="Games\TrajectoryController.cs" />
-    <Compile Include="Games\TrajectoryRendererData.cs" />
-    <Compile Include="Games\ITrajectory.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="PluginInfrastructure\ClikeStringArray.cs" />
     <Compile Include="PluginInfrastructure\DllExport\DllExportAttribute.cs" />
@@ -124,8 +68,6 @@
     <Compile Include="Forms\frmMyDlg.Designer.cs">
       <DependentUpon>frmMyDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="Games\InputProcessor.cs" />
-    <Compile Include="Games\UserControls\Textbox.cs" />
     <Compile Include="PluginInfrastructure\Win32.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="PluginInfrastructure\GatewayDomain.cs" />
@@ -163,36 +105,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Games\SpaceInvaders\Characters.txt" />
-    <Content Include="Games\SpaceInvaders\Audio\Data\SI01.mp3">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Games\SpaceInvaders\Audio\Data\SI02.mp3">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Games\SpaceInvaders\Audio\Data\SI03.mp3">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Games\SpaceInvaders\Audio\Data\SI04.mp3">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Games\SpaceInvaders\Audio\Data\SIAB.mp3">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Games\SpaceInvaders\Audio\Data\SIAD.mp3">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Games\SpaceInvaders\Audio\Data\SIPB.mp3">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Include="Games\SpaceInvaders\Audio\Data\SIPD.wav" />
-    <None Include="Games\SpaceInvaders\Audio\Data\SIPB.wav" />
-    <None Include="Games\SpaceInvaders\Audio\Data\SIAD.wav" />
-    <None Include="Games\SpaceInvaders\Audio\Data\SIAB.wav" />
-    <None Include="Games\SpaceInvaders\Audio\Data\SI04.wav" />
-    <None Include="Games\SpaceInvaders\Audio\Data\SI03.wav" />
-    <None Include="Games\SpaceInvaders\Audio\Data\SI02.wav" />
-    <None Include="Games\SpaceInvaders\Audio\Data\SI01.wav" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

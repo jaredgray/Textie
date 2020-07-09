@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Textie", "Textie\Textie.csproj", "{DB16AB7B-B1D5-4CBA-A5B8-980C62DBFE97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotepadEmulator", "NotepadEmulator\NotepadEmulator.csproj", "{3E307C16-4DF6-4F6C-B35E-D83CF4A2C5AA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,18 +25,6 @@ Global
 		{DB16AB7B-B1D5-4CBA-A5B8-980C62DBFE97}.Release|x64.Build.0 = Release|x64
 		{DB16AB7B-B1D5-4CBA-A5B8-980C62DBFE97}.Release|x86.ActiveCfg = Release|x86
 		{DB16AB7B-B1D5-4CBA-A5B8-980C62DBFE97}.Release|x86.Build.0 = Release|x86
-		{3E307C16-4DF6-4F6C-B35E-D83CF4A2C5AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3E307C16-4DF6-4F6C-B35E-D83CF4A2C5AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3E307C16-4DF6-4F6C-B35E-D83CF4A2C5AA}.Debug|x64.ActiveCfg = Debug|x64
-		{3E307C16-4DF6-4F6C-B35E-D83CF4A2C5AA}.Debug|x64.Build.0 = Debug|x64
-		{3E307C16-4DF6-4F6C-B35E-D83CF4A2C5AA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{3E307C16-4DF6-4F6C-B35E-D83CF4A2C5AA}.Debug|x86.Build.0 = Debug|Any CPU
-		{3E307C16-4DF6-4F6C-B35E-D83CF4A2C5AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3E307C16-4DF6-4F6C-B35E-D83CF4A2C5AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3E307C16-4DF6-4F6C-B35E-D83CF4A2C5AA}.Release|x64.ActiveCfg = Release|x64
-		{3E307C16-4DF6-4F6C-B35E-D83CF4A2C5AA}.Release|x64.Build.0 = Release|x64
-		{3E307C16-4DF6-4F6C-B35E-D83CF4A2C5AA}.Release|x86.ActiveCfg = Release|Any CPU
-		{3E307C16-4DF6-4F6C-B35E-D83CF4A2C5AA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
